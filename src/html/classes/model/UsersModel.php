@@ -5,11 +5,11 @@ $root .= "/data/tripList/html/classes";
 require_once($root."/model/BaseModel.php");
 
 /**
- * ユーザーモデルクラスです。
+ * ユーザーモデルクラス
  */
 class UsersModel extends BaseModel {
   /**
-   * コンストラクタです。
+   * コンストラクタ
    */
   public function __construct() {
     // 親クラスのコンストラクタを呼び出す
@@ -18,7 +18,6 @@ class UsersModel extends BaseModel {
 
   /**
    * すべてのユーザーの情報を取得
-   *
    * @return array ユーザーのレコードの配列
    */
   public function getUserAll() {
@@ -27,10 +26,10 @@ class UsersModel extends BaseModel {
     $sql .= "select ";
     $sql .= "id,";
     $sql .= "user,";
-    $sql .= "pass,";
-    $sql .= "mail,";
+    $sql .= "email,";
+    $sql .= "password,";
     $sql .= "birthday,";
-    $sql .= "admin ";
+    $sql .= "is_admin ";
     $sql .= "from users ";
     $sql .= "where is_deleted = 0 ";  // 論理削除されているユーザーログイン対象外
     $sql .= "order by id";
@@ -45,7 +44,6 @@ class UsersModel extends BaseModel {
 
   /**
    * ユーザーを検索してユーザーの情報を取得
-   *
    * @param string $user ユーザー名
    * @param striong $password パスワード
    * @return array ユーザー情報の配列（該当のユーザーが見つからないときは空の配列）
@@ -61,10 +59,10 @@ class UsersModel extends BaseModel {
     $sql .= "select ";
     $sql .= "id,";
     $sql .= "user,";
-    $sql .= "pass,";
-    $sql .= "mail,";
+    $sql .= "email,";
+    $sql .= "password,";
     $sql .= "birthday,";
-    $sql .= "admin ";
+    $sql .= "is_admin ";
     $sql .= "from users ";
     $sql .= "where is_deleted = 0 ";  // 論理削除されているユーザーはログイン対象外
     $sql .= "and user = :user";
@@ -98,7 +96,6 @@ class UsersModel extends BaseModel {
 
   /**
    * 指定IDのユーザーが存在するかどうか調べる
-   *
    * @param int $id ユーザーID
    * @return boolean ユーザーが存在するとき：true、ユーザーが存在しないとき：false
    */
