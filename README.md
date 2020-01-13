@@ -1,3 +1,4 @@
 # tripList
-lesson to php
-reference shered_todo_list
+lesson to php,
+this page is based on katacis shered_todo_list,
+and,,, directory name is bad, but ok, its lesson to php,
