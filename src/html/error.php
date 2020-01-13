@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>エラー</title>
-  <link rel="stylesheet" href="../css/normalize.css">
-  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="./css/normalize.css">
+  <link rel="stylesheet" href="./css/main.css">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
           <li></li>
           <li>
             <form>
-              <input type="button" value="ログアウト" onclick="location.href='../account/';">
+              <input type="button" value="ログアウト" onclick="location.href='./logout.php';">
             </form>
           </li>
         </ul>
@@ -31,7 +31,7 @@
         申し訳ございません。エラーが発生しました。
       </p>
       <form>
-        <input type="button" value="ログアウト" onclick="location.href='../account/';">
+        <input type="button" value="ログアウト" onclick="location.href='./logout.php';">
       </form>
   </main>
 

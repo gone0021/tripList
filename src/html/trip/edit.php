@@ -2,15 +2,24 @@
 //日付の取得
 $date = new DateTime("Asia/Tokyo");
 $today = $date->format("Y-m-d");
+
+// セッションスタート
+session_start();
+session_regenerate_id(true);
+
+// ワンタイムトークンを生成してセッションに保存（CSRF対策）
+$token = bin2hex(openssl_random_pseudo_bytes(1080));
+$_SESSION['token'] = $token;
+
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<title>新規登録</title>
-<link rel="stylesheet" href="../css/normalize.css">
-<link rel="stylesheet" href="../css/main.css">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>新規登録</title>
+  <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 <div class="container">
@@ -36,8 +45,11 @@ $today = $date->format("Y-m-d");
         ここにエラーの内容を表示します。
     </p>
 
+    <!-- POST_FORM -->
     <form action="./index.html" method="post">
-      <input type="hidden" name="item_id" value="3">
+      <!-- ワンタイムトークンの生成 -->
+      <input type="hidden" name="token" value="<?= $token ?>">
+
       <table class="list">
         <tr>
           <th>日時</th>

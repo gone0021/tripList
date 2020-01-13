@@ -2,15 +2,24 @@
 //日付の取得
 $date = new DateTime("Asia/Tokyo");
 $today = $date->format("Y-m-d");
+
+// セッションスタート
+session_start();
+session_regenerate_id(true);
+
+// ワンタイムトークンを生成してセッションに保存（CSRF対策）
+$token = bin2hex(openssl_random_pseudo_bytes(1080));
+$_SESSION['token'] = $token;
+
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<title>新規登録</title>
-<link rel="stylesheet" href="../css/normalize.css">
-<link rel="stylesheet" href="../css/main.css">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>新規登録</title>
+  <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 <div class="container">
@@ -24,7 +33,7 @@ $today = $date->format("Y-m-d");
           <li>ユーザー名</li>
           <li>
             <form>
-              <input type="button" value="ログアウト" onclick="location.href='../';">
+              <input type="button" value="ログアウト" onclick="location.href='../logout.php';">
             </form>
           </li>
         </ul>
@@ -32,12 +41,17 @@ $today = $date->format("Y-m-d");
   </header>
 
   <main>
-    <p class="error">
-        ここにエラーの内容を表示します。
-    </p>
+    <?php if (!empty($_SESSION['msg']['error'])): ?>
+        <p class="error">
+            <?=$_SESSION['msg']['error']?>
+        </p>
+    <?php endif ?>
+  
+    <!-- POST_FORM -->
+    <form action="./new_action.php" method="post">
+      <!-- ワンタイムトークンの生成 -->
+      <input type="hidden" name="token" value="<?= $token ?>">
 
-    <form action="./index.html" method="post">
-      <input type="hidden" name="item_id" value="3">
       <table class="list">
         <tr>
           <th>日時</th>
@@ -85,7 +99,7 @@ $today = $date->format("Y-m-d");
       <span class="mrg-r20">
         <input type="submit" value="更新">
       </span>
-      <input type="button" value="キャンセル" onclick="location.href='./index.html';">
+      <input type="button" value="キャンセル" onclick="location.href='./';">
       <br><br>
     </form>
   </main>

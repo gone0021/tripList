@@ -1,7 +1,7 @@
 <?php
   // require_once($_SERVER["DOCUMENT_ROOT"]."/classes/util/SessionUtil.php");
   $root = $_SERVER["DOCUMENT_ROOT"];
-  $root .= "/data/OurCalendar/html/classes";
+  $root .= "/data/tripList/html/classes";
   require_once($root."/util/SessionUtil.php");
 
   // セッションスタート

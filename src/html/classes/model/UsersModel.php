@@ -17,31 +17,34 @@ class UsersModel extends BaseModel {
   }
 
   /**
-   * すべてのユーザーの情報を取得します。
+   * すべてのユーザーの情報を取得
    *
    * @return array ユーザーのレコードの配列
    */
   public function getUserAll() {
+    // 登録済みのカラムをセレクトで取得
     $sql = "";
     $sql .= "select ";
     $sql .= "id,";
     $sql .= "user,";
     $sql .= "pass,";
-    $sql .= "family_name,";
-    $sql .= "first_name,";
-    $sql .= "is_admin ";
+    $sql .= "mail,";
+    $sql .= "birthday,";
+    $sql .= "admin ";
     $sql .= "from users ";
-    $sql .= "where is_deleted=0 ";  // 論理削除されているユーザーログイン対象外
+    $sql .= "where is_deleted = 0 ";  // 論理削除されているユーザーログイン対象外
     $sql .= "order by id";
 
+    // セッティング情報をSQL文にセット
     $stmt = $this->dbh->prepare($sql);
+    // SQL文の実行
     $stmt->execute();
-
+    // PDO::FETCH_ASSOC：カラム名をキーとする連想配列で取得
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
-   * ユーザーを検索して、ユーザーの情報を取得します。
+   * ユーザーを検索してユーザーの情報を取得
    *
    * @param string $user ユーザー名
    * @param striong $password パスワード
@@ -53,33 +56,36 @@ class UsersModel extends BaseModel {
       return array();
     }
 
+    // 登録済みのカラムをセレクトで取得
     $sql = "";
     $sql .= "select ";
     $sql .= "id,";
     $sql .= "user,";
     $sql .= "pass,";
-    $sql .= "family_name,";
-    $sql .= "first_name,";
-    $sql .= "is_admin ";
+    $sql .= "mail,";
+    $sql .= "birthday,";
+    $sql .= "admin ";
     $sql .= "from users ";
-    $sql .= "where is_deleted=0 ";  // 論理削除されているユーザーはログイン対象外
-    $sql .= "and user=:user";
+    $sql .= "where is_deleted = 0 ";  // 論理削除されているユーザーはログイン対象外
+    $sql .= "and user = :user";
 
+    // セレクトで取得した情報をSQL文にセット
     $stmt = $this->dbh->prepare($sql);
+    // パラメータをバインド
     $stmt->bindParam(":user", $user, PDO::PARAM_STR);
+    // SQL文の実行
     $stmt->execute();
-
+    // PDO::FETCH_ASSOC：カラム名をキーとする連想配列で取得
     $rec = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // 検索結果が0件のときは、空の配列を返却
+    // 検索結果が0件のときは空の配列を返却
     if (!$rec) {
       return array();
     }
 
     // パスワードの妥当性チェックを行い、妥当性がないときは空の配列を返却
-    // password_verify()については、
+    // password_verify()は以下を参照
     // https://www.php.net/manual/ja/function.password-verify.php
-    // 参照。
     if (!password_verify($password, $rec["pass"])) {
       return array();
     }
@@ -91,7 +97,7 @@ class UsersModel extends BaseModel {
   }
 
   /**
-   * 指定IDのユーザーが存在するかどうか調べます。
+   * 指定IDのユーザーが存在するかどうか調べる
    *
    * @param int $id ユーザーID
    * @return boolean ユーザーが存在するとき：true、ユーザーが存在しないとき：false
@@ -108,7 +114,7 @@ class UsersModel extends BaseModel {
     }
 
     $sql = "";
-    $sql .= "select count(id) as num from users where is_deleted=0";
+    $sql .= "select count(id) as num from users where is_deleted　=　0";
     $stmt = $this->dbh->prepare($sql);
     $stmt->execute();
     $ret = $stmt->fetch(PDO::FETCH_ASSOC);

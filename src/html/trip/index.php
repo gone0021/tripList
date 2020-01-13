@@ -11,28 +11,29 @@
   // セッションスタート
   SessionUtil::sessionStart();
 
-  // 既に設定済みのセッションに保存されたPOSTデータを削除
+  // 設定済みのセッションに保存されたPOSTデータを削除
   unset($_SESSION['post']);
 
-  // if (empty($_SESSION['user'])) {
-  //   // 未ログインのとき
-  //   header('Location: ../login/');
-  // } else {
-  //   // ログイン済みのとき
-  //   $user = $_SESSION['user'];
-  // }
+  if (empty($_SESSION['user'])) {
+    // 未ログインのとき
+    header('Location: ../login/');
+  } else {
+    // ログイン済みのとき
+    $user = $_SESSION['user'];
+  }
 
   try {
-    // 通常の一覧表示か、検索結果かを保存するフラグ
+    // 通常の一覧表示または検索結果かを保存するフラグ
     $isSearch = false;
 
+    // db接続のためTodoItemsを使用、db確定したら変更すること
     $db = new TodoItemsModel();
 
     // 検索キーワード
     $search = "";
 
     if (isset($_GET['search'])) {
-      // GETに項目があるときは、検索
+      // GETに項目があるときは検索
       $get = CommonUtil::sanitaize($_GET);
       $search = $get['search'];
       $isSearch = true;
@@ -44,7 +45,7 @@
 
   } catch (Exception $e) {
     // var_dump($e);
-    header('Location: ../error/error.php');
+    header('Location: ../error.php');
   }
 
   // 奇数行・偶数行の判定用カウンタ
@@ -73,7 +74,7 @@
         </li>
         <li>
           <form>
-            <input type="button" value="ログアウト" onclick="location.href='../login/logout.php';">
+            <input type="button" value="ログアウト" onclick="location.href='./logout.php';">
           </form>
         </li>
       </ul>

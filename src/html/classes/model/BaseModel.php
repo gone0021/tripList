@@ -14,7 +14,7 @@
   protected const DB_HOST = "localhost";
 
   /** @var string データベース名 */
-  protected const DB_NAME = "shered_todo_list";
+  protected const DB_NAME = "our_list";
 
   /** @var object PDOインスタンス */
   protected $dbh;
