@@ -1,5 +1,4 @@
 <?php
-
   // クラスの読み込み
   $directory = 'tripList';
   $root = $_SERVER['DOCUMENT_ROOT'];
@@ -14,12 +13,12 @@
   // 設定済みのセッションに保存されたPOSTデータを削除
   unset($_SESSION['post']);
 
-  if (empty($_SESSION['user'])) {
+  if (empty($_SESSION['email'])) {
     // 未ログインのとき
-    header('Location: ../login/');
+    header('Location: ../');
   } else {
     // ログイン済みのとき
-    $user = $_SESSION['user'];
+    $name = $_SESSION['name'];
   }
 
   try {
@@ -70,7 +69,7 @@
     <div class="login_info">
       <ul>
         <li>
-          ようこそ<?=$user['family_name'].$user['first_name'] ?>さん
+          ようこそ<?=$name['name'] ?>さん
         </li>
         <li>
           <form>

@@ -126,6 +126,16 @@ header {
   height: 50px;
 }
 
+
+input.login_box {
+  width: 200px;
+}
+
+input.login_email{
+  width: 208px;
+  height: 30px;
+}
+
 main {
   text-align: center;
 }
@@ -135,10 +145,6 @@ table
 ============*/
 table.login {
   margin: 50px auto 30px auto;
-}
-
-input.login_user, input.login_pass {
-  width: 200px;
 }
 
 table.list {

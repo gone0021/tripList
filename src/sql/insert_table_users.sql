@@ -1,21 +1,22 @@
-insert into `users` (
-    `name`,
-    `email`,
-    `password`,
-    `birthday`,
-    `is_admin`
+INSERT INTO `users` (
+  `name`, 
+  `email`, 
+  `birthday`, 
+  `password`, 
+  `is_admin`
 )
-values (
-    'test1',
-    'gt.4.pff.gi@gmail.com',
-    '$2y$10$eSePpwz2hteTQZNXO1BvFeI.VCSGF/YqGdpZda/sHQDQWzAJoehYi', -- パスワード test1
-    '1986-01-27',
-    '1'
+
+VALUES (
+  'gen.n', 
+  'gt.4.pff.gi@gmail.com', 
+  '1986-01-27', 
+  'hanabi', 
+  1
 ),
-(
-    'test2',
-    'fgx0021@gmail.com',
-    '$2y$10$btIzYtozzeEJ2J53ZU/Qz.YBK61RilXtGcVJkrZfz1r/fS8R72F.i', -- パスワード test2
-    '1985-07-07',
-    '0'
+VALUES (
+  'test1',
+  'test1@gmail.com',
+  '1999-01-01',
+  '$2y$10$eSePpwz2hteTQZNXO1BvFeI.VCSGF/YqGdpZda/sHQDQWzAJoehYi', -- パスワード test1
+  0
 );

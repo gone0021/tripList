@@ -1,8 +1,8 @@
 <?php
-// require_once($_SERVER["DOCUMENT_ROOT"]."/classes/model/BaseModel.php");
-$root = $_SERVER["DOCUMENT_ROOT"];
-$root .= "/data/tripList/html/classes";
-require_once($root."/model/BaseModel.php");
+// クラスの読み込み
+$root = $_SERVER['DOCUMENT_ROOT'];
+$root .= '/data/tripList/html';
+require_once($root.'/classes/model/BaseModel.php');
 
 /**
  * ユーザーモデルクラス
@@ -22,19 +22,19 @@ class UsersModel extends BaseModel {
    */
   public function getUserAll() {
     // 登録済みのカラムをセレクトで取得
-    $sql = "";
-    $sql .= "select ";
-    $sql .= "id,";
-    $sql .= "user,";
-    $sql .= "email,";
-    $sql .= "password,";
-    $sql .= "birthday,";
-    $sql .= "is_admin ";
-    $sql .= "from users ";
-    $sql .= "where is_deleted = 0 ";  // 論理削除されているユーザーログイン対象外
-    $sql .= "order by id";
+    $sql = '';
+    $sql .= 'select ';
+    $sql .= 'id,';
+    $sql .= 'name,';
+    $sql .= 'email,';
+    $sql .= 'birthday,';
+    $sql .= 'password,';
+    $sql .= 'is_admin ';
+    $sql .= 'from users ';
+    $sql .= 'where is_deleted = 0 ';  // 論理削除されているユーザーログイン対象外
+    $sql .= 'order by id';
 
-    // セッティング情報をSQL文にセット
+    // セレクトで取得した情報をSQL文にセット
     $stmt = $this->dbh->prepare($sql);
     // SQL文の実行
     $stmt->execute();
@@ -43,37 +43,34 @@ class UsersModel extends BaseModel {
   }
 
   /**
-   * ユーザーを検索してユーザーの情報を取得
-   * @param string $user ユーザー名
-   * @param striong $password パスワード
+   * メールアドレスからユーザーを検索してパスワードをチェック
+   * @param string $email メールアドレス
+   * @param string $password パスワード
    * @return array ユーザー情報の配列（該当のユーザーが見つからないときは空の配列）
    */
-  public function getUser($user, $password) {
-    // $userが空だったら、空の配列を返却
-    if (empty($user)) {
+  public function getUser($email, $password) {
+    // $emailが空だったら、空の配列を返却
+    if (empty($email)) {
       return array();
     }
 
     // 登録済みのカラムをセレクトで取得
-    $sql = "";
-    $sql .= "select ";
-    $sql .= "id,";
-    $sql .= "user,";
-    $sql .= "email,";
-    $sql .= "password,";
-    $sql .= "birthday,";
-    $sql .= "is_admin ";
-    $sql .= "from users ";
-    $sql .= "where is_deleted = 0 ";  // 論理削除されているユーザーはログイン対象外
-    $sql .= "and user = :user";
+    $sql = '';
+    $sql .= 'select ';
+    $sql .= 'id,';
+    $sql .= 'name,';
+    $sql .= 'email,';
+    $sql .= 'birthday,';
+    $sql .= 'password,';
+    $sql .= 'is_admin ';
+    $sql .= 'from users ';
+    $sql .= 'where is_deleted = 0 ';  // 論理削除されているユーザーはログイン対象外
+    $sql .= 'and email = :email ';
 
-    // セレクトで取得した情報をSQL文にセット
     $stmt = $this->dbh->prepare($sql);
-    // パラメータをバインド
-    $stmt->bindParam(":user", $user, PDO::PARAM_STR);
-    // SQL文の実行
+    // パラメータをバインド（:emailをポストしてきたemailの値へ変換） 
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
-    // PDO::FETCH_ASSOC：カラム名をキーとする連想配列で取得
     $rec = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // 検索結果が0件のときは空の配列を返却
@@ -84,16 +81,94 @@ class UsersModel extends BaseModel {
     // パスワードの妥当性チェックを行い、妥当性がないときは空の配列を返却
     // password_verify()は以下を参照
     // https://www.php.net/manual/ja/function.password-verify.php
-    if (!password_verify($password, $rec["pass"])) {
+
+    // if (!password_verify($password, $rec['password'])) {
+    //   return array();
+    // }
+
+    if ($password != $rec['password']) {
       return array();
     }
 
-    // パスワードの情報は削除する→不要な情報は保持しない（セキュリティ対策）
-    unset($rec["pass"]);
+    // パスワードの情報は削除する → 不要な情報は保持しない（セキュリティ対策）
+    unset($rec['password']);
 
     return $rec;
   }
 
+  /**
+   * メールアドレスからユーザーを検索
+   * @param string $email メールアドレス
+   * @return array ユーザー情報の配列
+   */
+  public function getUserEmail($email) {
+    // $emailが空だったら、空の配列を返却
+    if (empty($email)) {
+      return array();
+    }
+
+    // 登録済みのカラムをセレクトで取得
+    $sql = '';
+    $sql .= 'select ';
+    $sql .= 'id,';
+    $sql .= 'name,';
+    $sql .= 'email,';
+    $sql .= 'birthday,';
+    $sql .= 'is_admin ';
+    $sql .= 'from users ';
+    $sql .= 'where is_deleted = 0 ';  // 論理削除されているユーザーはログイン対象外
+    $sql .= 'and email = :email ';
+
+    $stmt = $this->dbh->prepare($sql);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->execute();
+    $rec = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // 検索結果が0件のときは空の配列を返却
+    if (!$rec) {
+      return array();
+    }
+
+    return $rec;
+  }
+
+  /**
+   * ユーザーネームからユーザーを検索
+   * @param string $name ユーザーネーム
+   * @return array ユーザー情報の配列
+   */
+  public function getUserNmae($name) {
+    // $emailが空だったら、空の配列を返却
+    if (empty($name)) {
+      return array();
+    }
+
+    // 登録済みのカラムをセレクトで取得
+    $sql = '';
+    $sql .= 'select ';
+    $sql .= 'id,';
+    $sql .= 'name,';
+    $sql .= 'email,';
+    $sql .= 'birthday,';
+    $sql .= 'is_admin ';
+    $sql .= 'from users ';
+    $sql .= 'where is_deleted = 0 ';  // 論理削除されているユーザーはログイン対象外
+    $sql .= 'and name = :name ';
+
+    $stmt = $this->dbh->prepare($sql);
+    $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+    $stmt->execute();
+    $rec = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // 検索結果が0件のときは空の配列を返却
+    if (!$rec) {
+      return array();
+    }
+
+    return $rec;
+  }
+
+  
   /**
    * 指定IDのユーザーが存在するかどうか調べる
    * @param int $id ユーザーID
@@ -110,17 +185,55 @@ class UsersModel extends BaseModel {
       return false;
     }
 
-    $sql = "";
-    $sql .= "select count(id) as num from users where is_deleted　=　0";
+    $sql = '';
+    $sql .= 'select count(id) as num,';
+    $sql .= 'from users,';
+    $sql .= 'where is_deleted = 0';
     $stmt = $this->dbh->prepare($sql);
     $stmt->execute();
     $ret = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // レコードの数が0だったらfalseを返却
-    if ($ret["num"] == 0) {
+    if ($ret['num'] == 0) {
       return false;
     }
 
     return true;
   }
+
+  /**
+   * ユーザーの新規登録
+   * @param array $data 作業項目の連想配列
+   * @return bool 成功した場合:TRUE、失敗した場合:FALSE
+   */
+  public function insertUser($data) {
+    // テーブルの構造でデフォルト値が設定されているカラムをinsert文で指定する必要はありません（特に理由がない限り）。
+    $sql = '';
+    $sql .= 'insert into users (';
+    $sql .= 'name,';
+    $sql .= 'email,';
+    $sql .= 'birthday,';
+    $sql .= 'password';
+    $sql .= ') ';
+    $sql .= 'values (';
+    $sql .= ':name,';
+    $sql .= ':email,';
+    $sql .= ':birthday,';
+    $sql .= ':password';
+    $sql .= ')';
+
+    // 情報をSQL文にセット
+    $stmt = $this->dbh->prepare($sql);
+    // パラメータをバインド
+    $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
+    $stmt->bindParam(':email', $data['email'], PDO::PARAM_STR);
+    $stmt->bindParam(':birthday', $data['birthday'], PDO::PARAM_STR);
+    $stmt->bindParam(':password', $data['password'], PDO::PARAM_STR);
+    // SQL文の実行
+    $ret = $stmt->execute();
+
+    return $ret;
+  }
+
+
 }

@@ -1,25 +1,34 @@
 <?php
-  // require_once("../classes/util/SessionUtil.php");
-
   // クラスの読み込み
-  $directory = 'tripList';
   $root = $_SERVER['DOCUMENT_ROOT'];
   $root .= "/data/tripList/html";
   require_once($root."/classes/util/SessionUtil.php");
-
-  // var_dump($root);
+  require_once($root."/classes/model/UsersModel.php");
 
   // セッションスタート
   SessionUtil::sessionStart();
 
+
+  $db = new UsersModel();
+  // $user = $db->getUserAll();
+  // $user = $db->getUser($_SESSION["post"]["email"], $_SESSION["post"]["password"]);
+
   // セッション変数に保存したPOSTデータ
-  $user = "";
-  if (!empty($_SESSION["post"]["user"])) {
-    $user = $_SESSION["post"]["user"];
+  $email = "";
+  if (!empty($_SESSION["post"]["email"])) {
+    $email = $_SESSION["post"]["email"];
   }
+
+  // var_dump($_SESSION["post"]["email"]);
+  // echo '<br>';
+  // var_dump($_SESSION["post"]["password"]);
+  // echo '<br>';
+  // var_dump($user);
+
 
   // セッション変数に保存したPOSTデータを削除
   unset($_SESSION["post"]);
+
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +45,7 @@
   <header>
     <h1 id="head-l">ログイン</h1>
     <br>
-    <div class="align-r-m3"><a href="./account/">新規登録</a></div>
+    <div class="align-r-m3"><a href="./account/new/">新規登録</a></div>
   </header>
 
   <main>
@@ -52,10 +61,10 @@
       <table class="login">
         <tr>
           <th class="login_field">
-            ユーザー名
+            メールアドレス
           </th>
           <td class="login_field">
-            <input type="text" name="user" id="user" class="login_user" value="<?=$user?>">
+            <input type="email" name="email" id="email" class="login_email" value="<?=$email?>">
           </td>
         </tr>
 
@@ -64,13 +73,14 @@
             パスワード
           </th>
           <td class="login_field">
-            <input type="password" name="password" id="password" class="login_pass">
+            <input type="password" name="password" id="password" class="login_box">
           </td>
         </tr>
 
       </table>
       <input type="submit" value="ログイン" id="login">
     </form>
+
     <br><br><br>
     <a href="./account/pass/">パスワードを忘れた</a>
   </main>

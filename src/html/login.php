@@ -1,38 +1,37 @@
 <?php
-  // require_once($_SERVER["DOCUMENT_ROOT"]."/data/OurCalendar/html/classes/util/SessionUtil.php");
-  // require_once($_SERVER["DOCUMENT_ROOT"]."/data/OurCalendar/html/classes//classes/util/CommonUtil.php");
-  // require_once($_SERVER["DOCUMENT_ROOT"]."/data/OurCalendar/html/classes//classes/model/UsersModel.php");
-
+  // クラスの読み込み
   $root = $_SERVER["DOCUMENT_ROOT"];
-  $root .= "/data/tripList/html/classes";
-  require_once($root."/util/SessionUtil.php");
-  require_once($root."/util/CommonUtil.php");
-  require_once($root."/model/UsersModel.php");
+  $root .= "/data/tripList/html";
+  require_once($root."/classes/util/SessionUtil.php");
+  require_once($root."/classes/util/CommonUtil.php");
+  require_once($root."/classes/model/UsersModel.php");
 
+  // セッションスタート
   SessionUtil::sessionStart();
 
   // サニタイズ
   $post = CommonUtil::sanitaize($_POST);
 
   try {
-    // ユーザーの検索、ユーザー情報の取得
+    // ユーザーの検索とユーザー情報の取得
     $db = new UsersModel();
-    $user = $db->getUser($post["user"], $post["password"]);
+    // 入力フォームで入力されたemailとpasswordをgetUserの引数にpost
+    $user = $db->getUser($post["email"], $post["password"]);
 
     if (empty($user)) {
       // ユーザーの情報が取得できなかったとき
-      // エラーメッセージをセッション変数に保存→ログインページに表示
-      $_SESSION["msg"]["error"] = "ユーザー名またはパスワードが違います。";
+      // エラーメッセージをセッション変数に保存 → ログインページに表示
+      $_SESSION["msg"]["error"] = "メールアドレスまたはパスワードが違います。";
 
-      // POSTされてきたユーザー名をセッション変数に保存→ログインページのユーザー名のテキストボックスに表示
-      $_SESSION["post"]["user"] = $post["user"];
+      // POSTされてきたメールアドレスをセッション変数に保存→ログインページのメールアドレスのテキストボックスに表示
+      $_SESSION["post"]["email"] = $post["email"];
 
       // ログインページへリダイレクト
       header("Location: ./");
     } else {
-      // ユーザーの情報が取得できたとき
-      // ユーザーの情報をセッション変数に保存
-      $_SESSION["user"] = $user;
+      // メールアドレスの情報が取得できたとき
+      // ユーザー情報をセッション変数に保存（メニューで表示するためnameを保存する）
+      $_SESSION["name"] = $user;
 
       // セッション変数に保存されているエラーメッセージをクリア
       $_SESSION["msg"]["error"] = "";
@@ -43,7 +42,7 @@
       unset($_SESSION["post"]);
 
       // 作業一覧ページを表示
-      header("Location: ./trip/");
+      header("Location: ./trip/index.html");
     }
 
   } catch (Exception $e) {

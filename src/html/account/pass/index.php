@@ -35,7 +35,7 @@
   <header>
     <h1 id="head-l">パスワード再設定</h1>
     <br>
-    <div class="align-r-m3"><a href="../">ログイン画面へ</a></div>
+    <div class="align-r-m3"><a href="../../">ログイン画面へ</a></div>
   </header>
 
   <main>
