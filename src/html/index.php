@@ -3,15 +3,13 @@
   $root = $_SERVER['DOCUMENT_ROOT'];
   $root .= "/data/tripList/html";
   require_once($root."/classes/util/SessionUtil.php");
-  require_once($root."/classes/model/UsersModel.php");
 
   // セッションスタート
   SessionUtil::sessionStart();
 
-
-  $db = new UsersModel();
-  // $user = $db->getUserAll();
-  // $user = $db->getUser($_SESSION["post"]["email"], $_SESSION["post"]["password"]);
+  // require_once($root."/classes/model/UsersModel.php");
+  // $db = new UsersModel();
+  // $user = $db->checkPassForEmail($_SESSION["post"]["email"], $_SESSION["post"]["password"]);
 
   // セッション変数に保存したPOSTデータ
   $email = "";

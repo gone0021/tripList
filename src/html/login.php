@@ -16,15 +16,16 @@
     // ユーザーの検索とユーザー情報の取得
     $db = new UsersModel();
     // 入力フォームで入力されたemailとpasswordをgetUserの引数にpost
-    $user = $db->getUser($post["email"], $post["password"]);
+    $user = $db->checkPassForEmail($post["email"], $post["password"]);
 
     if (empty($user)) {
       // ユーザーの情報が取得できなかったとき
       // エラーメッセージをセッション変数に保存 → ログインページに表示
-      $_SESSION["msg"]["error"] = "メールアドレスまたはパスワードが違います。";
+      $_SESSION["msg"]["error"] = "情報が一致しません";
 
       // POSTされてきたメールアドレスをセッション変数に保存→ログインページのメールアドレスのテキストボックスに表示
       $_SESSION["post"]["email"] = $post["email"];
+      $_SESSION["post"]["password"] = $post["password"];
 
       // ログインページへリダイレクト
       header("Location: ./");

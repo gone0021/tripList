@@ -11,12 +11,6 @@
   // サニタイズ
   $post = CommonUtil::sanitaize($_POST);
 
-  // POSTされてきた値をセッションに代入
-  $_SESSION['post']['name'] = $post['name'];
-  $_SESSION['post']['email'] = $post['email'];
-  $_SESSION['post']['birthday'] = $post['birthday'];
-  $_SESSION['post']['pass2'] = $post['pass2'];
-
   // データベースに登録する内容を連想配列にする。
   $data = array (
     'name' => $post['name'],
@@ -30,9 +24,6 @@
   try {
     $db = new UsersModel();
     $db->insertUser($data);
-
-    // セッションに保存したPOSTデータを削除
-    unset($_SESSION['post']);
 
   } catch (Exception $e) {
     // var_dump($e);exit;

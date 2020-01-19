@@ -11,7 +11,7 @@
 
   // フォームで送信されてきたトークンが正しいかどうか確認（CSRF対策）
   if (!isset($_SESSION['token']) || $_SESSION['token'] !== $_POST['token']) {
-    $_SESSION['err_msg']['err'] = "不正な処理が行われました。";
+    $_SESSION['msg']['err'] = "不正な処理が行われました。";
     header('Location: ./');
     exit;
   }
@@ -27,45 +27,45 @@
 
   // 名前のバリデーション
   $validityCheck[] = validationUtil::isValidName (
-    $post['name'], $_SESSION['err_msg']['name']
+    $post['name'], $_SESSION['msg']['name']
   );
 
   // ユーザーネームの重複チェック
-  $nameCheck = $userModel->getUserNmae($post['name']);
-  if (!empty($nameCheck)) {
+  $checkName = $userModel->getUserForNmae($post['name']);
+  if (!empty($checkName)) {
     $validityCheck[] = false;
-    $_SESSION["err_msg"]["name"] = "既に使われています";
+    $_SESSION["msg"]["name"] = "既に使われています";
   } else {
     $validityCheck[] = true;
   }
 
   // メールアドレスのバリデーション
   $validityCheck[] = validationUtil::isValidEmail (
-    $post['email'], $_SESSION['err_msg']['email']
+    $post['email'], $_SESSION['msg']['email']
   );
 
   // メールアドレスの重複チェック
-  $emailCheck = $userModel->getUserEmail($post['email']);
-  if (!empty($emailCheck)) {
+  $checkEmail = $userModel->getUserForEmail($post['email']);
+  if (!empty($checkEmail)) {
     $validityCheck[] = false;
-    $_SESSION["err_msg"]["email"] = "メールアドレスが重複しています";
+    $_SESSION["msg"]["email"] = "メールアドレスが重複しています";
   } else {
     $validityCheck[] = true;
   }
 
   // 名前のバリデーション
   $validityCheck[] = validationUtil::isDate (
-    $post['birthday'], $_SESSION['err_msg']['birthday']
+    $post['birthday'], $_SESSION['msg']['birthday']
   );
 
   // メールアドレスのバリデーション
   $validityCheck[] = validationUtil::isValidPass (
-    $post['pass1'], $_SESSION['err_msg']['pass1']
+    $post['pass1'], $_SESSION['msg']['pass1']
   );
 
   // ダブルチェック
   $validityCheck[] = validationUtil::isDoubleCheck (
-    $post['pass1'], $post['pass2'], $_SESSION['err_msg']['pass2']
+    $post['pass1'], $post['pass2'], $_SESSION['msg']['pass2']
   );
 
   // バリデーションで不備があった場合
@@ -78,10 +78,10 @@
   }
 
   // エラーメッセージをクリア
-  unset($_SESSION['err_msg']);
-  $_SESSION['err_msg'] = null;
+  unset($_SESSION['msg']);
+  $_SESSION['msg'] = null;
 
- var_dump($post['name']);
+//  var_dump($post['name']);
 ?>
 
 <!DOCTYPE html>

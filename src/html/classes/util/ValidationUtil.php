@@ -86,7 +86,7 @@ class ValidationUtil {
   }
 
   /**
-   * 入力内容の妥当性を判定
+   * ダブルチェックの妥当性を判定
    * @param string $item1 入力内容1
    * @param string $item2 入力内容2
    * @param string $msg エラーメッセージを代入

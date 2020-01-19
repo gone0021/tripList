@@ -1,52 +1,95 @@
 <?php
-  // require_once($_SERVER["DOCUMENT_ROOT"]."/data/OurCalendar/html/classes/util/SessionUtil.php");
-  // require_once($_SERVER["DOCUMENT_ROOT"]."/data/OurCalendar/html/classes//classes/util/CommonUtil.php");
-  // require_once($_SERVER["DOCUMENT_ROOT"]."/data/OurCalendar/html/classes//classes/model/UsersModel.php");
-
-  $root = $_SERVER["DOCUMENT_ROOT"];
-  $root .= "/data/OurCalendar/html/classes";
-  require_once($root."/util/SessionUtil.php");
-  require_once($root."/util/CommonUtil.php");
-  require_once($root."/model/UsersModel.php");
-
+  // クラスの読み込み
+  $root = $_SERVER['DOCUMENT_ROOT'];
+  $root .= "/data/OurCalendar/html";
+  require_once($root."/classes/util/SessionUtil.php");
+  
   SessionUtil::sessionStart();
 
-  // サニタイズ
-  $post = CommonUtil::sanitaize($_POST);
+  $token = bin2hex(openssl_random_pseudo_bytes(108));
+  $_SESSION['token'] = $token;
 
-  try {
-    // ユーザーの検索、ユーザー情報の取得
-    $db = new UsersModel();
-    $user = $db->getUser($post["user"], $post["password"]);
+?>
 
-    if (empty($user)) {
-      // ユーザーの情報が取得できなかったとき
-      // エラーメッセージをセッション変数に保存→ログインページに表示させる。
-      $_SESSION["msg"]["error"] = "ユーザー名またはパスワードが違います。";
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>パスワードの再設定</title>
+  <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/main.css">
+</head>
 
-      // POSTされてきたユーザー名をセッション変数に保存→ログインページのユーザー名のテキストボックスに表示させる。
-      $_SESSION["post"]["user"] = $post["user"];
+<body>
+<div class="container">
+  <main>
+    <header>
+      <h1 id="head-l">パスワードの再設定</h1>
+    </header>
 
-      // ログインページへリダイレクト
-      header("Location: ./");
-    } else {
-      // ユーザーの情報が取得できたとき
-      // ユーザーの情報をセッション変数に保存
-      $_SESSION["user"] = $user;
+    <!-- エラー時の処理 -->
+    <?php if (!empty($_SESSION["msg"]["error"])) : ?>
+      <p class="error">
+        <?= $_SESSION["msg"]["error"] ?>
+      </p>
+    <?php endif ?>
 
-      // セッション変数に保存されているエラーメッセージをクリア
-      $_SESSION["msg"]["error"] = "";
-      unset($_SESSION["msg"]["error"]);
+    <!-- 完了時の処理 -->
+    <form action="./update_action.php" method="post">
+      <input type="hidden" name="token" value="<?= $token ?>">
 
-      // セッション変数に保存されているPOSTされてきたデータをクリア
-      $_SESSION["post"] = "";
-      unset($_SESSION["post"]);
+      <table class="login">
+        <tr>
+          <th class="login_field">
+            メールアドレス
+          </th>
+          <td class="login_field">
+            <?=$_SESSION["email2"]?>
+            <input type="hidden" name="email" value="<?=$_SESSION["email2"]?>">
+          </td>
+        </tr>
 
-      // 作業一覧ページを表示
-      header("Location: ../todo/");
-    }
+        <?php if (isset($_SESSION['msg']['pass1'])) : ?>
+          <tr>
+            <th></th>
+            <td>
+              <p class="error"><?= $_SESSION['msg']['pass1'] ?></p>
+            </td>
+          </tr>
+        <?php endif ?>
+        <tr>
+          <th class="login_field">
+            パスワード（6文字以上）
+          </th>
+          <td class="login_field">
+            <input type="password" name="pass1" id="pass1" class="login_box">
+          </td>
+        </tr>
 
-  } catch (Exception $e) {
-    // var_dump($e);exit;
-    header("Location: ../error/error.php");
-  }
+        <?php if (isset($_SESSION['msg']['pass2'])) : ?>
+          <tr>
+            <th></th>
+            <td>
+              <p class="error"><?= $_SESSION['msg']['pass2'] ?></p>
+            </td>
+          </tr>
+        <?php endif ?>
+        <tr>
+          <th class="login_field">
+            パスワード（確認用）
+          </th>
+          <td class="login_field">
+            <input type="password" name="pass2" id="pass2" class="login_box">
+          </td>
+        </tr>
+      </table>
+      <input type="submit" value="送信" id="add">
+      <input type="button" value="戻る" onclick="location.href='./';">
+    </form>
+  </main>
+
+  <footer>
+  </footer>
+</div>
+</body>
+</html>

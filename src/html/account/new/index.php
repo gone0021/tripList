@@ -48,11 +48,6 @@
   </header>
 
   <main>
-    <!-- トークンチェックのエラーメッセージ -->
-    <?php if (isset($_SESSION['err_msg']['err'])) : ?>
-      <p class="warning"><?= $_SESSION['err_msg']['err'] ?></p>
-    <?php endif ?>
-
     <!-- 登録内容の確認へ -->
     <form action="./check.php" method="post">
       <!-- ワンタイムトークンの生成 -->
@@ -61,9 +56,9 @@
       <table class="login">
         <tr>
           <th></th>
-          <?php if (isset($_SESSION['err_msg']['name'])) : ?>
+          <?php if (isset($_SESSION['msg']['name'])) : ?>
             <td>
-              <p class="error"><?= $_SESSION['err_msg']['name'] ?></p>
+              <p class="error"><?= $_SESSION['msg']['name'] ?></p>
             </td>
           <?php endif ?>
         </tr>
@@ -78,9 +73,9 @@
 
         <tr>
           <th></th>
-          <?php if (isset($_SESSION['err_msg']['email'])) : ?>
+          <?php if (isset($_SESSION['msg']['email'])) : ?>
             <td>
-              <p class="error"><?= $_SESSION['err_msg']['email'] ?></p>
+              <p class="error"><?= $_SESSION['msg']['email'] ?></p>
             </td>
           <?php endif ?>
         </tr>
@@ -95,9 +90,9 @@
 
         <tr>
           <th></th>
-          <?php if (isset($_SESSION['err_msg']['birthday'])) : ?>
+          <?php if (isset($_SESSION['msg']['birthday'])) : ?>
             <td>
-              <p class="error"><?= $_SESSION['err_msg']['birthday'] ?></p>
+              <p class="error"><?= $_SESSION['msg']['birthday'] ?></p>
             </td>
           <?php endif ?>
         </tr>
@@ -116,9 +111,9 @@
 
         <tr>
           <th></th>
-          <?php if (isset($_SESSION['err_msg']['pass1'])) : ?>
+          <?php if (isset($_SESSION['msg']['pass1'])) : ?>
             <td>
-              <p class="error"><?= $_SESSION['err_msg']['pass1'] ?></p>
+              <p class="error"><?= $_SESSION['msg']['pass1'] ?></p>
             </td>
           <?php endif ?>
         </tr>
@@ -133,9 +128,9 @@
 
         <tr>
           <th></th>
-          <?php if (isset($_SESSION['err_msg']['pass2'])) : ?>
+          <?php if (isset($_SESSION['msg']['pass2'])) : ?>
             <td>
-              <p class="error"><?= $_SESSION['err_msg']['pass2'] ?></p>
+              <p class="error"><?= $_SESSION['msg']['pass2'] ?></p>
             </td>
           <?php endif ?>
         </tr>
@@ -150,9 +145,10 @@
 
       </table>
       <input type="submit" value="確認" id="add">
+      <input type="reset" value="リセット" id="add">
     </form>
     <br>
-    <a href="./pass/">パスワードを忘れた</a>
+    <a href="../pass/">パスワードを忘れた</a>
   </main>
 
   <footer>
