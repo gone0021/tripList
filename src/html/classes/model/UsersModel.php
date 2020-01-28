@@ -229,11 +229,7 @@ class UsersModel extends BaseModel {
     // password_verify()については、
     // https://www.php.net/manual/ja/function.password-verify.php
     // 参照。
-    // if (!password_verify($password, $rec['password'])) {
-    //   return false;
-    // }
-
-    if ($password != $rec['password']) {
+    if (!password_verify($password, $rec['password'])) {
       return array();
     }
 

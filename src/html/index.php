@@ -85,6 +85,7 @@
 
   <footer>
   </footer>
+  <?php unset($_SESSION["msg"]); ?>
 </div>
 </body>
 </html>

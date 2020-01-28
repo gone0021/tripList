@@ -43,7 +43,7 @@
       unset($_SESSION["post"]);
 
       // 作業一覧ページを表示
-      header("Location: ./trip/index.html");
+      header("Location: ./trip/");
     }
 
   } catch (Exception $e) {

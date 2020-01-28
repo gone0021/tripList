@@ -84,13 +84,19 @@ class
   float: right;
 }
 
+.strong {
+  background-color: #fff0f5 ;
+  font-weight: bold;
+  color: firebrick;
+}
+
 .title {
   float: left;
 }
 
 .warning {
   background-color: #ffbbbb;
-  color: #ff0000;
+  color: red;
 }
 
 

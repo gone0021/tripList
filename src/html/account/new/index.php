@@ -119,7 +119,7 @@
         </tr>
         <tr>
           <th class="login_field">
-            パスワード（6文字以上）
+            パスワード<br>（半角英数字で8文字以上）
           </th>
           <td class="login_field">
             <input type="password" name="pass1" id="pass1" class="login_box">
@@ -153,6 +153,7 @@
 
   <footer>
   </footer>
+  <?php unset($_SESSION["smg"]); ?> 
 </div>
 </body>
 </html>

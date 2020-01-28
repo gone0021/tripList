@@ -109,6 +109,7 @@
     </form>
     <br>
   </main>
+  <?php unset($_SESSION["smg"]); ?> 
 
   <footer>
   </footer>

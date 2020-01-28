@@ -45,12 +45,15 @@
   }
 
   // バリデーションを通過
+  // パスワードの暗号化
+  $hash = password_hash($post['pass2'], PASSWORD_DEFAULT);
+
   // セッション変数に保存したエラーメッセージをクリアする
   $_SESSION['msg']['error'] = '';
   // データベースに登録する内容を連想配列にする。
   $data = array (
     'email' => $post['email'],
-    'password' => $post['pass2'],
+    'password' => $hash,
   );
 
   try {

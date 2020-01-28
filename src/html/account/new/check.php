@@ -53,8 +53,8 @@
     $validityCheck[] = true;
   }
 
-  // 名前のバリデーション
-  $validityCheck[] = validationUtil::isDate (
+  // 誕生日のバリデーション
+  $validityCheck[] = validationUtil::isBirthday (
     $post['birthday'], $_SESSION['msg']['birthday']
   );
 
@@ -76,6 +76,13 @@
       exit;
     }
   }
+ 
+  // パスワードの暗号化
+  $hash = password_hash($post['pass2'], PASSWORD_DEFAULT);
+ 
+  // パスワードを伏せ字に
+  $hide = str_repeat('*', strlen($post["pass2"]));
+  $hide = $post["pass2"];
 
   // エラーメッセージをクリア
   unset($_SESSION['msg']);
@@ -132,8 +139,8 @@
         <tr>
           <th>パスワード</th>
           <td>
-            <?= ($post['pass2']) ?>
-            <input type="hidden" name="pass2" value="<?=$post['pass2']?>">
+            <?= $hide ?>
+            <input type="hidden" name="pass2" value="<?= $hash ?>">
           </td>
         </tr>
       </table>

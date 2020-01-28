@@ -26,7 +26,7 @@
   );
 
   // 誕生日のバリデーション
-  $validityCheck[] = validationUtil::isDate (
+  $validityCheck[] = validationUtil::isBirthday (
     $post['birthday'], $_SESSION['msg']['birthday']
   );
 

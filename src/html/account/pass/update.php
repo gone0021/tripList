@@ -27,13 +27,6 @@
       <h1 id="head-l">パスワードの再設定</h1>
     </header>
 
-    <!-- エラー時の処理 -->
-    <?php if (!empty($_SESSION["msg"]["error"])) : ?>
-      <p class="error">
-        <?= $_SESSION["msg"]["error"] ?>
-      </p>
-    <?php endif ?>
-
     <!-- 完了時の処理 -->
     <form action="./update_action.php" method="post">
       <input type="hidden" name="token" value="<?= $token ?>">
@@ -59,7 +52,7 @@
         <?php endif ?>
         <tr>
           <th class="login_field">
-            パスワード（6文字以上）
+            パスワード<br>（半角英数字で8文字以上）
           </th>
           <td class="login_field">
             <input type="password" name="pass1" id="pass1" class="login_box">
@@ -90,6 +83,7 @@
 
   <footer>
   </footer>
+  <?php unset($_SESSION["smg"]); ?> 
 </div>
 </body>
 </html>
