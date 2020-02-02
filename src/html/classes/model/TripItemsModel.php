@@ -55,7 +55,7 @@ class TripItemsModel extends BaseModel {
     $sql .= 't.map_item,';
     $sql .= 't.comment ';
     $sql .= 'from trip_items as t ';
-    $sql .= 'inner join users as u ';
+    $sql .= 'inner join users as u '; // inner join
     $sql .= 'on t.user_id=u.id ';
     $sql .= 'where t.is_deleted =0 '; // 論理削除されている作業項目は表示対象外
     $sql .= 'order by t.date asc'; // dateの順番に並べる
@@ -86,9 +86,9 @@ class TripItemsModel extends BaseModel {
     $sql .= 't.map_item,';
     $sql .= 't.comment ';
     $sql .= 'from trip_items as t ';
-    $sql .= 'inner join users as u ';
+    $sql .= 'inner join users as u '; // inner join
     $sql .= 'on t.user_id =u.id ';
-    $sql .= 'where t.is_deleted =0 ';
+    $sql .= 'where t.is_deleted =0 '; // where
     $sql .= "and (";
     $sql .= "u.name like :name ";
     $sql .= "or t.area like :area ";
@@ -112,11 +112,11 @@ class TripItemsModel extends BaseModel {
     }
 
     $stmt = $this->dbh->prepare($sql);
+    $stmt->bindParam(':name', $likeWord, PDO::PARAM_STR);
     $stmt->bindParam(':area', $likeWord, PDO::PARAM_STR);
     $stmt->bindParam(':point', $likeWord, PDO::PARAM_STR);
-    $stmt->bindParam(':is_went', $went, PDO::PARAM_INT);
-    $stmt->bindParam(':name', $likeWord, PDO::PARAM_STR);
     $stmt->bindParam(':date', $search, PDO::PARAM_STR);
+    $stmt->bindParam(':is_went', $went, PDO::PARAM_INT);
     $stmt->execute();
     $ret = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -144,9 +144,9 @@ class TripItemsModel extends BaseModel {
     $sql .= 't.map_item,';
     $sql .= 't.comment ';
     $sql .= 'from trip_items as t ';
-    $sql .= 'inner join users as u ';
+    $sql .= 'inner join users as u '; // inner join
     $sql .= 'on t.user_id =u.id ';
-    $sql .= 'where t.id =:id ';
+    $sql .= 'where t.id =:id '; // where
     $sql .= 'and t.is_deleted =0 '; // 論理削除されている作業項目は表示対象外
 
     $stmt = $this->dbh->prepare($sql);
@@ -216,7 +216,7 @@ class TripItemsModel extends BaseModel {
     $sql .= 'map_item =:map_item,';
     $sql .= 'comment =:comment,';
     $sql .= 'is_deleted =:is_deleted ';  // 現状の仕様では「削除フラグ」をアップデートする必要はないが、今後の仕様追加のために実装しておく。
-    $sql .= 'where id =:id';
+    $sql .= 'where id =:id'; // where
 
     $stmt = $this->dbh->prepare($sql);
     $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
@@ -245,7 +245,7 @@ class TripItemsModel extends BaseModel {
     $sql = '';
     $sql .= 'UPDATE trip_items set ';
     $sql .= 'is_went =1 ';
-    $sql .= 'where id =:id ';
+    $sql .= 'where id =:id '; // where
     $sql .= 'and is_went =0 '; // 念の為にdbでも状態を確認する
 
     $stmt = $this->dbh->prepare($sql);
@@ -267,7 +267,7 @@ class TripItemsModel extends BaseModel {
     $sql = '';
     $sql .= 'UPDATE trip_items set ';
     $sql .= 'is_went =0 ';
-    $sql .= 'where id =:id ';
+    $sql .= 'where id =:id '; // where
     $sql .= 'and is_went =1 ';
 
     $stmt = $this->dbh->prepare($sql);
@@ -289,7 +289,7 @@ class TripItemsModel extends BaseModel {
     $sql = '';
     $sql .= 'UPDATE trip_items set ';
     $sql .= 'is_deleted =1 ';
-    $sql .= 'where id =:id';
+    $sql .= 'where id =:id'; // where
 
     $stmt = $this->dbh->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
