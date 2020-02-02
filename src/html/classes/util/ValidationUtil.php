@@ -186,17 +186,20 @@ class ValidationUtil {
    * @return boolean
    */
   public static function isValidMap($map, &$msg): bool {
-    $start = '<iframe src="https://www.google.com/maps';
-    $end = '</iframe>';
     $msg = '';
+    preg_match("/^<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $map);
+
     if (empty($map)) {
       $msg = "URLを入力してください";
       return false;
     }
-    // if (!empty($map) && !preg_match("/^$start/", $map)) {
-    // $msg = "正しいマップのURLを入力してください";
-    // return false;
+
+    // ※厳密なサニタイズが成功したら実装する（おそらくHTML特殊文字へ変換する必要あり）
+    // if (empty($map)) {
+    //   $msg = "地図の埋め込みコードが不適切です。";
+    //   return false;
     // }
+
     return true;
   }
 

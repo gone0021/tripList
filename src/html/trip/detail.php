@@ -2,7 +2,6 @@
   $root = $_SERVER['DOCUMENT_ROOT'];
   $root .= "/data/tripList/html";
   require_once($root."/classes/util/SessionUtil.php");
-  require_once($root."/classes/util/CommonUtil.php");
   require_once($root."/classes/model/TripItemsModel.php");
 
   // セッションスタート
@@ -17,19 +16,13 @@
     // ログイン済みのとき
     $user = $_SESSION['name'];
   }
-  
-  // サニタイズ
-  $post = CommonUtil::sanitaize($_POST);
 
   try {
     $item = array();
     // 指定IDの作業項目を取得
     $db = new TripItemsModel();
-    $item = $db->getTripItemById($post['item_id']);
+    $item = $db->getTripItemById($_GET['id']);
  
-    // POSTされてきたitem_idをセッションに保存
-    $_SESSION['item_id'] = $post['item_id'];
-
   } catch (Exception $e) {
     // var_dump($e);
     header('Location: ../error.php');
@@ -41,10 +34,8 @@
   } else {
     $is_went = '行った';
   }
-  // POSTされてきたitem_idをセッションに保存
-  $_SESSION['item_id'] = $post['item_id'];
 
-  var_dump($_SESSION['item_id'] );
+  // var_dump($_GET['id'] );
 
 ?>
 
@@ -68,7 +59,7 @@
         <li>ようこそ<?=$user['name']?>さん</li>
         <li>
           <form>
-            <input type="button" value="ログアウト" onclick="location.href='../login/index.html';">
+            <input type="button" value="ログアウト" onclick="location.href='../logout.php';">
           </form>
         </li>
       </ul>
@@ -82,8 +73,6 @@
       </p>
     <?php endif ?>
 
-    <form action="./edit_action.php" method="post">
-      <!-- ワンタイムトークンの生成 -->
       <table class="list">
         <tr>
           <th>日時</th>
@@ -124,9 +113,6 @@
         </tr>
       </table>
 
-      <span class="mrg-r20">
-        <input type="submit" value="更新">
-      </span>
       <input type="button" value="戻る" onclick="location.href='./';">
       <br><br>
 

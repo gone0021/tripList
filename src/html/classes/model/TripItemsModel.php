@@ -55,8 +55,8 @@ class TripItemsModel extends BaseModel {
     $sql .= 't.map_item,';
     $sql .= 't.comment ';
     $sql .= 'from trip_items as t ';
-    $sql .= 'inner join ';
-    $sql .= 'users as u on t.user_id=u.id ';
+    $sql .= 'inner join users as u ';
+    $sql .= 'on t.user_id=u.id ';
     $sql .= 'where t.is_deleted =0 '; // 論理削除されている作業項目は表示対象外
     $sql .= 'order by t.date asc'; // dateの順番に並べる
 
@@ -86,26 +86,35 @@ class TripItemsModel extends BaseModel {
     $sql .= 't.map_item,';
     $sql .= 't.comment ';
     $sql .= 'from trip_items as t ';
-    $sql .= 'inner join ';
-    $sql .= 'users as u on t.user_id =u.id ';
+    $sql .= 'inner join users as u ';
+    $sql .= 'on t.user_id =u.id ';
     $sql .= 'where t.is_deleted =0 ';
-    $sql .= 'and (';
-    $sql .= 't.area like :area ';
-    $sql .= 't.point like :point ';
-    $sql .= 't.is_went like :is_went ';
-    $sql .= 'or u.name like :name ';
-    $sql .= 'or t.date=:date ';
-    $sql .= ') ';
+    $sql .= "and (";
+    $sql .= "u.name like :name ";
+    $sql .= "or t.area like :area ";
+    $sql .= "or t.point like :point ";
+    $sql .= "or t.date :date ";
+    $sql .= "or t.is_went like :is_went ";
+    $sql .= ") ";
     $sql .= 'order by t.date asc'; // dateの順番に並べる
 
     // bindParam()の第2引数には値を直接入れることができないので
     // 下記のようにして、検索ワードを変数に入れる。
-    $likeWord = '%$search%';
+    $likeWord = "%$search%";
+
+    $went='';
+    if ($search == '行った') {
+      $went = 1;
+    } else if ($search == '気になる') {
+      $went = 0;
+    } else {
+      $went = '';
+    }
 
     $stmt = $this->dbh->prepare($sql);
     $stmt->bindParam(':area', $likeWord, PDO::PARAM_STR);
     $stmt->bindParam(':point', $likeWord, PDO::PARAM_STR);
-    $stmt->bindParam(':is_went', $search, PDO::PARAM_STR);
+    $stmt->bindParam(':is_went', $went, PDO::PARAM_INT);
     $stmt->bindParam(':name', $likeWord, PDO::PARAM_STR);
     $stmt->bindParam(':date', $search, PDO::PARAM_STR);
     $stmt->execute();
@@ -135,8 +144,8 @@ class TripItemsModel extends BaseModel {
     $sql .= 't.map_item,';
     $sql .= 't.comment ';
     $sql .= 'from trip_items as t ';
-    $sql .= 'inner join ';
-    $sql .= 'users as u on t.user_id =u.id ';
+    $sql .= 'inner join users as u ';
+    $sql .= 'on t.user_id =u.id ';
     $sql .= 'where t.id =:id ';
     $sql .= 'and t.is_deleted =0 '; // 論理削除されている作業項目は表示対象外
 

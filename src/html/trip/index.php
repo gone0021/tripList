@@ -25,26 +25,10 @@
 
   try {
     $db = new TripItemsModel();
-
-    // 通常の一覧表示または検索結果かを保存するフラグ
-    $isSearch = false;
-
-    // 検索キーワード
-    $search = "";
-
-    if (isset($_GET['search'])) {
-      // GETに項目があるときは検索
-      $get = CommonUtil::sanitaize($_GET);
-      $search = $get['search'];
-      $isSearch = true;
-      $items = $db->getTripItemBySearch($search);
-    } else {
-      // GETに項目がないときは、作業項目を全件取得
-      $items = $db->getTripItemAll();
-    }
+    $items = $db->getTripItemAll();
 
   } catch (Exception $e) {
-    var_dump($e);exit;
+    var_dump($e); exit;
     header('Location: ../error.php');
   }
 
@@ -86,13 +70,15 @@
   <main>
     <div class="main-header">
       <!-- main header GET -->
-      <form action="./" method="get">
-        <!-- 新規登録ボタン -->
+      <!-- 新規登録ボタン -->
+      <form action="./new.php" method="get">
         <div class="entry">
-          <input type="button" name="entry-button" id="entry-button" class="entry-button" value="作業登録" onclick="location.href='./new.php'">
+          <input type="submit" name="new" id="new" class="new" value="新規登録">
         </div>
+      </form>
 
-        <!-- 検索フォーム -->
+      <!-- 検索フォーム -->
+      <form action="./search.php" method="get">
         <div class="search">
           <input type="text" name="search" id="search">
           <input type="submit" value="🔍検索">
@@ -110,81 +96,73 @@
         <th>操作</th>
       </tr>
 
-    <!-- 行数チェック -->
-    <?php
-      foreach ($items as $item):
-        if ($line % 2 == 0) {
-          $class = "even";
-        } else {
-          $class = "odd";
-        }
-
-        // if ($item['is_went'] == 0) {
-        //   $class="strong";
-        // }
-    ?>
-
-    <!-- メニュー -->
-    <tr class="<?=$class?>">
-      <!-- ポイント名 -->
-      <td class="align-left">
-        <a href="./detail.php"> <?= $item['point'] ?> </a>
-      </td>
-
-      <!-- 日付 -->
-      <td class="align-left">
-        <?=$item['date']?>
-      </td>
-
-      <!-- 登録者 -->
-      <td>
-        <?=$item['name']?>
-      </td>
-
-      <!-- 状態 -->
-      <td>
-        <?php
-          if ($item['is_went'] == 0) {
-            echo '気になる';
-          } else {
-            echo '行った';
-          }
-        ?>
-      </td>
-
-      <!-- 操作 -->
-      <td>
-        <form action="./trip.php" method="post">
-          <input type="hidden" name="item_id" value="<?=$item['id']?>">
-          <input type="submit" value="状態">
-        </form>
-
-        <form action="./edit.php" method="post">
-          <input type="hidden" name="item_id" value="<?=$item['id']?>">
-          <input type="submit" value="更新">
-        </form>
-
-        <form action="./delete.php" method="post">
-          <input type="hidden" name="item_id" value="<?=$item['id']?>">
-          <input type="submit" value="削除">
-        </form>
-      </td>
-
+      <!-- 行数チェック -->
       <?php
-        $line++;
-        endforeach;
-      ?>
-    </table>
+        foreach ($items as $item):
+          if ($line % 2 == 0) {
+            $class = "even";
+          } else {
+            $class = "odd";
+          }
 
-    <?php if ($isSearch): ?>
-      <div class="main-footer">
-      <form>
-        <div class="goback">
-          <input type="button" value="戻る" onclick="location.href='./';">
-        </div>
-      </form>
-    </div>
-    <?php endif ?>
+          // if ($item['is_went'] == 0) {
+          //   $class="strong";
+          // }
+        // to endforeach
+      ?>
+
+      <!-- メニュー -->
+      <tr class="<?=$class?>">
+        <!-- ポイント名 -->
+        <td class="align-left">
+          <a href="./detail.php?id=<?= $item['id'] ?>"> <?= $item['point'] ?> </a>
+        </td>
+
+        <!-- 日付 -->
+        <td class="align-left">
+          <?=$item['date']?>
+        </td>
+
+        <!-- 登録者 -->
+        <td>
+          <?=$item['name']?>
+        </td>
+
+        <!-- 状態 -->
+        <td>
+          <?php
+            if ($item['is_went'] == 0) {
+              echo '気になる';
+            } else {
+              echo '行った';
+            }
+          ?>
+        </td>
+
+        <!-- 操作 -->
+        <td>
+          <form action="./trip.php" method="post">
+            <input type="hidden" name="item_id" value="<?=$item['id']?>">
+            <input type="submit" value="状態">
+          </form>
+
+          <form action="./edit.php" method="post">
+            <input type="hidden" name="item_id" value="<?=$item['id']?>">
+            <input type="submit" value="更新">
+          </form>
+
+          <form action="./delete.php" method="post">
+            <input type="hidden" name="item_id" value="<?=$item['id']?>">
+            <input type="submit" value="削除">
+          </form>
+        </td>
+
+        <?php
+          $line++;
+          endforeach; // 行数チェックのforeach
+        ?>
+      </tr>
+    </table>
   </main>
 
   <footer>

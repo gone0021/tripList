@@ -4,11 +4,12 @@
  */
 class CommonUtil {
 
-  function tag_kyoka($str){
-    $search = array('&lt;b&gt;','&lt;/b&gt;','&lt;u&gt;','&lt;/u&gt;','&lt;strong&gt;','&lt;/strong&gt;');
-    $replace = array('<b>','</b>','<u>','</u>','<strong>','</strong>');
-   return str_replace($search,$replace,$str);
-   }
+  // function tag_kyoka($str){
+  //   $search = array('&lt;b&gt;','&lt;/b&gt;','&lt;u&gt;','&lt;/u&gt;','&lt;strong&gt;','&lt;/strong&gt;');
+  //   $replace = array('<b>','</b>','<u>','</u>','<strong>','</strong>');
+  //  return str_replace($search,$replace,$str);
+  //  }
+
   /**
    * POSTされたデータをサニタイズします。
    *
@@ -20,12 +21,23 @@ class CommonUtil {
     foreach ($before as $k => $v) {
       $after[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
     }
+    return $after;
 
-    // 指定のタグを許可する
-    $search = array('&lt;b&gt;','&lt;/b&gt;','&lt;u&gt;','&lt;/u&gt;','&lt;strong&gt;','&lt;/strong&gt;');
-    $replace = array('<ifarame>','</iframe>');
-
-    return str_replace($search,$replace,$after);
+    // 良くない成功例（マッチした時に$beforの全てがサニタイズされない）
+    // $after = array();
+    //   foreach ($before as $k => $v) {
+    //     if (preg_match("/<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $before[$k])) {
+    //       return $before;
+    //     } else {
+    //       $after[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
+    //   }
+    // }
+  
+    // 厳密なサニタイズ（GoogleMapタグのみHTML特殊文字をデコード）
+    // if (preg_match("/<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $before[$k])) {
+    //   $html = array('&lt;iframe','ENT_QUOTES');
+    //   htmlspecialchars_decode($html,ENT_QUOTES);
+    // } else {
+    // return $after;
   }
-
 }

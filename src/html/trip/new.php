@@ -24,33 +24,33 @@
     // ログイン済みのとき
     $user = $_SESSION['name'];
   }
-
   // セッションに保存したPOSTデータ
+  // 日付
   $date = date('Y-m-d');
   if (!empty($_SESSION['post']['date'])) {
       $date = $_SESSION['post']['date'];
   }
-
+  // 地域
   $area = '';
   if (!empty($_SESSION['post']['area'])) {
       $area =  $_SESSION['post']['area'];
   }
-
+  // ポイント
   $point = '';
   if (!empty($_SESSION['post']['point'])) {
       $point = $_SESSION['post']['point'];
   }
-
+  // マップ
   $map = '';
   if (!empty($_SESSION['post']['map'])) {
       $map = $_SESSION['post']['map'];
   }
-
+  // 備考
   $comment = '';
   if (!empty($_SESSION['post']['comment'])) {
       $comment = $_SESSION['post']['comment'];
   }
-
+  // 気になる/行った
   $is_went = '';
   if (!empty($_SESSION['post']['is_went'])) {
       $is_went = $_SESSION['post']['is_went'];
@@ -103,9 +103,11 @@
         <tr>
           <th>日時</th>
           <td class="align-l">
+            <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['date'])) : ?>
               <p class="error"><?= $_SESSION['msg']['date'] ?></p>
             <?php endif ?>
+            <!-- 入力フォーム -->
             <input type="date" name="date" id="date" class="date" value="<?= $date ?>">
           </td>
         </tr>
@@ -113,9 +115,11 @@
         <tr>
           <th>ポイント</th>
           <td class="align-l">
+            <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['point'])) : ?>
               <p class="error"><?= $_SESSION['msg']['point'] ?></p>
             <?php endif ?>
+            <!-- 入力フォーム -->
             <input type="text" name="point" id="point" class="item_name" value="<?= $point ?>">
           </td>
         </tr>
@@ -123,9 +127,11 @@
         <tr>
           <th>地域</th>
           <td class="align-l">
+            <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['area'])) : ?>
               <p class="error"><?= $_SESSION['msg']['area'] ?></p>
             <?php endif ?>
+            <!-- 入力フォーム -->
             <input type="text" name="area" id="area" class="item_name" value="<?= $area ?>">
           </td>
         </tr>
@@ -144,9 +150,11 @@
         <tr>
           <th>マップ</th>
           <td class="align-l ggmap">
+            <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['map'])) : ?>
               <p class="error"><?= $_SESSION['msg']['map'] ?></p>
             <?php endif ?>
+            <!-- 入力フォーム -->
             <input type="text"  name="map" id="map" class="item_name" value="<?= $map ?>">
             <p><a href="https://www.google.co.jp/maps/" target="blank">GoogleMap</a>から「共有→地図を埋め込む」のURLを貼り付けてください</p>
           </td>
@@ -155,9 +163,11 @@
         <tr>
           <th>備考</th>
           <td class="align-l">
+            <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['comment'])) : ?>
               <p class="error"><?= $_SESSION['msg']['comment'] ?></p>
             <?php endif ?>
+            <!-- 入力フォーム -->
             <textarea name="comment" id="comment" cols="60" rows="5" ><?= $comment ?></textarea>
           </td>
         </tr>

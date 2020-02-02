@@ -33,32 +33,26 @@
 
   // バリデーションチェック
   $validityCheck = array();
-
-  // 日付のバリデーション
+  // 日付
   $validityCheck[] = validationUtil::isDate (
     $post['date'], $_SESSION['msg']['date']
   );
-
-  // 地域名のバリデーション
+  // 地域名
   $validityCheck[] = validationUtil::isValidItem (
     $post['area'], $_SESSION['msg']['area']
   );
-
-  // ポイント名のバリデーション
+  // ポイント名
   $validityCheck[] = validationUtil::isValidItem (
     $post['point'], $_SESSION['msg']['point']
   );
-
-  // マップのバリデーション
+  // マップ
   $validityCheck[] = validationUtil::isValidMap (
     $post['map'], $_SESSION['msg']['map']
   );
-
-  // 備考のバリデーション
+  // 備考
   $validityCheck[] = validationUtil::isValidComment (
     $post['comment'], $_SESSION['msg']['comment']
   );
-
   // バリデーションで不備があった場合
   foreach ($validityCheck as $k => $v) {
     // $vにnullが代入されている可能性があるので「===」で比較
