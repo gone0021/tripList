@@ -93,8 +93,8 @@ class TripItemsModel extends BaseModel {
     $sql .= "u.name like :name ";
     $sql .= "or t.area like :area ";
     $sql .= "or t.point like :point ";
-    $sql .= "or t.date :date ";
-    $sql .= "or t.is_went like :is_went ";
+    $sql .= "or t.date =:date ";
+    // $sql .= "or t.is_went like :is_went ";
     $sql .= ") ";
     $sql .= 'order by t.date asc'; // dateの順番に並べる
 
@@ -102,21 +102,21 @@ class TripItemsModel extends BaseModel {
     // 下記のようにして、検索ワードを変数に入れる。
     $likeWord = "%$search%";
 
-    $went='';
-    if ($search == '行った') {
-      $went = 1;
-    } else if ($search == '気になる') {
-      $went = 0;
-    } else {
-      $went = '';
-    }
+    // $is_went='';
+    // if ($search == '行った') {
+    //   $is_went = 1;
+    // } else if ($search == '気になる') {
+    //   $is_went = 0;
+    // } else {
+    //   $is_went = '';
+    // }
 
     $stmt = $this->dbh->prepare($sql);
     $stmt->bindParam(':name', $likeWord, PDO::PARAM_STR);
     $stmt->bindParam(':area', $likeWord, PDO::PARAM_STR);
     $stmt->bindParam(':point', $likeWord, PDO::PARAM_STR);
     $stmt->bindParam(':date', $search, PDO::PARAM_STR);
-    $stmt->bindParam(':is_went', $went, PDO::PARAM_INT);
+    // $stmt->bindParam(':is_went', $is_swent, PDO::PARAM_INT);
     $stmt->execute();
     $ret = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

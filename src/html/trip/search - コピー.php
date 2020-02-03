@@ -19,52 +19,30 @@
     $user = $_SESSION['name'];
   }
 
-  try {
-    // 通常の一覧表示か、検索結果かを保存するフラグ
-    $isSearch = false;
-
-    // dbへの接続
-    $db = new TripItemsModel();
-
-    // 検索キーワード
-    $search = "";
-
-    if (isset($_GET['search'])) {
-      // GETに項目があるときは、検索
+  // dbへの接続
+  if (empty($_SESSION['search'])) {
+      try {
+      $db = new TripItemsModel();
+      // 検索キーワード
+      $search = '';
       $get = CommonUtil::sanitaize($_GET);
       $search = $get['search'];
-      $isSearch = true;
       $items = $db->getTripItemBySearch($search);
-    } else {
-      // GETに項目がないときは、作業項目を全件取得
-      $items = $db->getTripItemAll();
+      $_SESSION['search'] = $items;
+    } catch (Exception $e) {
+      // echo '<pre>';
+      var_dump($e);
+      // echo '</pre>';
+      exit;
+      header('Location: ../error.php');
     }
-
-  } catch (Exception $e) {
-    // var_dump($e);
-    header('Location: ./error.php');
+  } else {
+    $items = $_SESSION['search'];
   }
-
-
-  // // dbへの接続
-  //   try {
-  //   $db = new TripItemsModel();
-  //   // 検索キーワード
-  //   $search = '';
-  //   $get = CommonUtil::sanitaize($_GET);
-  //   $search = $get['search'];
-  //   $items = $db->getTripItemBySearch($search);
-  // } catch (Exception $e) {
-  //   // echo '<pre>';
-  //   var_dump($e);
-  //   // echo '</pre>';
-  //   exit;
-  //   header('Location: ./error.php');
-  // }
 
   // header('Location: ./');
 
-  // var_dump($items);
+  var_dump($_SESSION['search']);
 
   // 奇数行(odd)・偶数行(even)の判定用カウンタ
   $line = 0;
@@ -211,4 +189,4 @@
 
 </div>
 </body>
-</html> -->
+</html>

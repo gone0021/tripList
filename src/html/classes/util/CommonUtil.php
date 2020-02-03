@@ -34,7 +34,9 @@ class CommonUtil {
     // }
   
     // 厳密なサニタイズ（GoogleMapタグのみHTML特殊文字をデコード）
+    // if (preg_match("&lt;iframe src=&quot;https://www.google.com/maps", $before[$k])) {
     // if (preg_match("/<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $before[$k])) {
+
     //   $html = array('&lt;iframe','ENT_QUOTES');
     //   htmlspecialchars_decode($html,ENT_QUOTES);
     // } else {

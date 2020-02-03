@@ -5,9 +5,11 @@
   require_once($root."/classes/util/CommonUtil.php");
   require_once($root."/classes/model/TripItemsModel.php");
 
-  
   // セッションスタート
   SessionUtil::sessionStart();
+
+  // 設定済みのセッションに保存されたPOSTデータを削除
+  unset($_SESSION['post']);
 
   // ログインの確認
   // $user = $db->checkPassForEmail($post["email"], $post["password"]); メールアドレスとパスワードからユーザー情報を検索
@@ -19,57 +21,56 @@
     $user = $_SESSION['name'];
   }
 
-  try {
-    // 通常の一覧表示か、検索結果かを保存するフラグ
-    $isSearch = false;
+  // if (empty($_SESSION['search'])) {
+    try {
+      // 通常の一覧表示か、検索結果かを保存するフラグ
+      $isSearch = false;
 
-    // dbへの接続
-    $db = new TripItemsModel();
+      $db = new TripItemsModel();
 
-    // 検索キーワード
-    $search = "";
+      // 検索キーワード
+      $search = "";
 
-    if (isset($_GET['search'])) {
-      // GETに項目があるときは、検索
-      $get = CommonUtil::sanitaize($_GET);
-      $search = $get['search'];
-      $isSearch = true;
-      $items = $db->getTripItemBySearch($search);
-    } else {
-      // GETに項目がないときは、作業項目を全件取得
-      $items = $db->getTripItemAll();
-    }
-
-  } catch (Exception $e) {
-    // var_dump($e);
-    header('Location: ./error.php');
+      if (isset($_GET['search'])) {
+          // GETに項目があるときは、検索
+          $get = CommonUtil::sanitaize($_GET);
+          $search = $get['search'];
+          $isSearch = true;
+          $items = $db->getTripItemBySearch($search);
+          $_SESSION['search'] = $items;
+      } else {
+          // GETに項目がないときは、作業項目を全件取得
+          $items = $db->getTripItemAll();
+      }
+    } catch (Exception $e) {
+        // var_dump($e);
+        header('Location: ../error/error.php');
   }
-
-
-  // // dbへの接続
-  //   try {
-  //   $db = new TripItemsModel();
-  //   // 検索キーワード
-  //   $search = '';
-  //   $get = CommonUtil::sanitaize($_GET);
-  //   $search = $get['search'];
-  //   $items = $db->getTripItemBySearch($search);
-  // } catch (Exception $e) {
-  //   // echo '<pre>';
-  //   var_dump($e);
-  //   // echo '</pre>';
-  //   exit;
-  //   header('Location: ./error.php');
+  // } else {
+  //   $isSearch = true;
+  //   $items = $_SESSION['search'];
+  //   // header('Location: ./search.php');
   // }
 
-  // header('Location: ./');
+// if (empty($_SESSION['search'])) {
+//     try {
+//       $db = new TripItemsModel();
+//       $items = $db->getTripItemAll();
+//       $isSearch = false;
+//     } catch (Exception $e) {
+//       var_dump($e); exit;
+//       header('Location: ../error.php');
+//     }
+//   } else {
+//     $items = $_SESSION['search'];
+//     $isSearch = true;
+//     header('Location: ./search.php');
+//   }
 
-  // var_dump($items);
+  var_dump($_SESSION['search']);
 
   // 奇数行(odd)・偶数行(even)の判定用カウンタ
   $line = 0;
-
-  // var_dump($_GET['id']);
 ?>
 
 <!DOCTYPE html>
@@ -106,18 +107,16 @@
   <main>
     <div class="main-header">
       <!-- main header GET -->
-      <form action="./new.php" method="get">
+      <form action="./" method="get">
         <!-- 新規登録ボタン -->
         <div class="entry">
-          <input type="submit" name="new" id="new" class="new" value="新規登録">
+        <input type="button" name="new" id="new" class="new" value="作業登録" onclick="location.href='./new.php'">
         </div>
-      </form>
-
-      <!-- 検索フォーム -->
-      <form action="./search.php" method="get">
+        <!-- 検索フォーム -->
         <div class="search">
+          <!-- <input type="text" name="search" id="search" onclick="location.href='./search.php'"> -->
           <input type="text" name="search" id="search">
-          <input type="submit" value="🔍検索" onclick="location.href='./search.php'">
+          <input type="submit" value="🔍検索">
         </div>
       </form>
     </div>
@@ -191,24 +190,27 @@
 
         <?php
           $line++;
-          endforeach;
+          endforeach; // 行数チェックのforeach
         ?>
       </tr>
     </table>
 
+    <?php if ($isSearch): ?>
       <div class="main-footer">
         <form>
           <div class="goback">
-            <input type="button" value="戻る" onclick="location.href='./index.php';">
+            <input type="button" value="戻る" onclick="location.href='./';">
             <?php unset($_SESSION['search']); ?>
           </div>
         </form>
       </div>
+    <?php endif ?>
   </main>
 
   <footer>
+
   </footer>
 
 </div>
 </body>
-</html> -->
+</html>

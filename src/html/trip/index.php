@@ -20,17 +20,32 @@
     // ログイン済みのとき
     $user = $_SESSION['name'];
   }
-
-  // var_dump($post['id']);
-
+  
   try {
-    $db = new TripItemsModel();
-    $items = $db->getTripItemAll();
+    // 通常の一覧表示か、検索結果かを保存するフラグ
+    $isSearch = false;
 
+    $db = new TripItemsModel();
+
+    // 検索キーワード
+    $search = "";
+
+    if (isset($_GET['search'])) {
+      // GETに項目があるときは、検索
+      $get = CommonUtil::sanitaize($_GET);
+      $search = $get['search'];
+      $isSearch = true;
+      $items = $db->getTripItemBySearch($search);
+    } else {
+      // GETに項目がないときは、作業項目を全件取得
+      $items = $db->getTripItemAll();
+    }
   } catch (Exception $e) {
-    var_dump($e); exit;
-    header('Location: ../error.php');
+    // var_dump($e);
+    header('Location: ./error.php');
   }
+
+  // var_dump($);
 
   // 奇数行(odd)・偶数行(even)の判定用カウンタ
   $line = 0;
@@ -70,15 +85,12 @@
   <main>
     <div class="main-header">
       <!-- main header GET -->
-      <!-- 新規登録ボタン -->
-      <form action="./new.php" method="get">
+        <form action="./" method="get">
+        <!-- 新規登録 -->
         <div class="entry">
-          <input type="submit" name="new" id="new" class="new" value="新規登録">
+          <input type="button" name="new" id="new" class="new" value="作業登録" onclick="location.href='./new.php'">
         </div>
-      </form>
-
-      <!-- 検索フォーム -->
-      <form action="./search.php" method="get">
+        <!-- 検索フォーム -->
         <div class="search">
           <input type="text" name="search" id="search">
           <input type="submit" value="🔍検索">
@@ -104,11 +116,7 @@
           } else {
             $class = "odd";
           }
-
-          // if ($item['is_went'] == 0) {
-          //   $class="strong";
-          // }
-        // to endforeach
+        // go to endforeach
       ?>
 
       <!-- メニュー -->
@@ -163,6 +171,17 @@
         ?>
       </tr>
     </table>
+
+    <?php if ($isSearch): ?>
+      <div class="main-footer">
+        <form>
+          <div class="goback">
+            <input type="button" value="戻る" onclick="location.href='./';">
+            <?php unset($_SESSION['search']); ?>
+          </div>
+        </form>
+      </div>
+    <?php endif ?>
   </main>
 
   <footer>
