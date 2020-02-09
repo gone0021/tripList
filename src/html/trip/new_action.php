@@ -62,11 +62,7 @@
     }
   }
 
-  // user_nameからアイテムを検索する（最初にuserをsessionしているためチェックはしない）
-  // $db = new UsersModel();
-  // $users = $db->getUserForNmae($user);
-
-  // バリデーションを通過したらセッションに保存したエラーメッセージをクリアする
+  // バリデーションを通過したらセッションに保存したエラーメッセージをクリア
   $_SESSION['msg']['error'] = '';
 
   $is_went = '';
@@ -75,6 +71,18 @@
   } else {
     $is_went = '行った';
   }
+
+
+  // if (preg_match("/<iframe src=\"https:\/\/www\.google\.com\/maps(.*?)<\/iframe>/s", $post['map'])) {
+  if (preg_match("/&lt;iframe src=\&quot;https:\/\/www.google\.com\/maps(.*?)&lt;\/iframe&gt;/s",$post['map'])) {
+    $mach = 'yes';
+  } else {
+    $mach = 'no';
+  }
+
+  var_dump($post['map']);
+  echo "<br>";
+  var_dump($mach);
 ?>
 
 <!DOCTYPE html>

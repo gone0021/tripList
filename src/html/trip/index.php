@@ -20,20 +20,28 @@
     // ログイン済みのとき
     $user = $_SESSION['name'];
   }
-  
+
+  // 検索キーワード
+  // if (isset($_SESSION['search'])) {
+  //   $search = $_SESSION['search'];
+  // } else {
+  //   $search = '';
+  // }
+
   try {
     // 通常の一覧表示か、検索結果かを保存するフラグ
     $isSearch = false;
-
     $db = new TripItemsModel();
 
-    // 検索キーワード
-    $search = "";
-
+    // searchに値があればsearchで検索する
     if (isset($_GET['search'])) {
-      // GETに項目があるときは、検索
-      $get = CommonUtil::sanitaize($_GET);
-      $search = $get['search'];
+      // GETに項目があるときは検索
+      $_SESSION['search'] = $_GET['search'];
+      $search = $_GET['search'];
+      $isSearch = true;
+      $items = $db->getTripItemBySearch($search);
+    } else if (isset($_SESSION['search'])) {
+      $search =  $_SESSION['search'];
       $isSearch = true;
       $items = $db->getTripItemBySearch($search);
     } else {
@@ -45,7 +53,7 @@
     header('Location: ./error.php');
   }
 
-  // var_dump($);
+  var_dump($_SESSION['search']);
 
   // 奇数行(odd)・偶数行(even)の判定用カウンタ
   $line = 0;
@@ -176,7 +184,7 @@
       <div class="main-footer">
         <form>
           <div class="goback">
-            <input type="button" value="戻る" onclick="location.href='./';">
+            <input type="button" value="戻る" onclick="location.href='./'; ">
             <?php unset($_SESSION['search']); ?>
           </div>
         </form>

@@ -3,13 +3,6 @@
  * 共通関数クラスです。
  */
 class CommonUtil {
-
-  // function tag_kyoka($str){
-  //   $search = array('&lt;b&gt;','&lt;/b&gt;','&lt;u&gt;','&lt;/u&gt;','&lt;strong&gt;','&lt;/strong&gt;');
-  //   $replace = array('<b>','</b>','<u>','</u>','<strong>','</strong>');
-  //  return str_replace($search,$replace,$str);
-  //  }
-
   /**
    * POSTされたデータをサニタイズします。
    *
@@ -18,28 +11,19 @@ class CommonUtil {
    */
   public static function sanitaize($before) {
     $after = array();
-    foreach ($before as $k => $v) {
+
+    // 坂上さん仕様
+    foreach ($_POST as $k => $v) {
       $after[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
+    }
+    // GoogleMapのiframeのみデコード
+    if (preg_match("/&lt;iframe src=\&quot;https:\/\/www.google\.com\/maps(.*?)&lt;\/iframe&gt;/s",$after['map'])) {
+      $after['map'] = htmlspecialchars_decode($after['map'], ENT_QUOTES);
     }
     return $after;
 
-    // 良くない成功例（マッチした時に$beforの全てがサニタイズされない）
-    // $after = array();
-    //   foreach ($before as $k => $v) {
-    //     if (preg_match("/<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $before[$k])) {
-    //       return $before;
-    //     } else {
-    //       $after[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
-    //   }
-    // }
-  
-    // 厳密なサニタイズ（GoogleMapタグのみHTML特殊文字をデコード）
-    // if (preg_match("&lt;iframe src=&quot;https://www.google.com/maps", $before[$k])) {
-    // if (preg_match("/<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $before[$k])) {
+    // googleMapのiframe文字列の参考+
+    // https://ja.stackoverflow.com/questions/28159/iframe%E3%82%92%E6%AD%A3%E8%A6%8F%E8%A1%A8%E7%8F%BE%E3%81%A7%E5%88%A4%E5%88%A5%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95
 
-    //   $html = array('&lt;iframe','ENT_QUOTES');
-    //   htmlspecialchars_decode($html,ENT_QUOTES);
-    // } else {
-    // return $after;
   }
 }

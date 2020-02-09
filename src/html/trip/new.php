@@ -24,36 +24,37 @@
     // ログイン済みのとき
     $user = $_SESSION['name'];
   }
-  // セッションに保存したPOSTデータ
+
+  // セッションに保存したPOSTデータの呼び出し
   // 日付
   $date = date('Y-m-d');
   if (!empty($_SESSION['post']['date'])) {
-      $date = $_SESSION['post']['date'];
+    $date = $_SESSION['post']['date'];
   }
   // 地域
   $area = '';
   if (!empty($_SESSION['post']['area'])) {
-      $area =  $_SESSION['post']['area'];
+    $area =  $_SESSION['post']['area'];
   }
   // ポイント
   $point = '';
   if (!empty($_SESSION['post']['point'])) {
-      $point = $_SESSION['post']['point'];
+    $point = $_SESSION['post']['point'];
   }
   // マップ
   $map = '';
   if (!empty($_SESSION['post']['map'])) {
-      $map = $_SESSION['post']['map'];
+    $map = $_SESSION['post']['map'];
   }
   // 備考
   $comment = '';
   if (!empty($_SESSION['post']['comment'])) {
-      $comment = $_SESSION['post']['comment'];
+    $comment = $_SESSION['post']['comment'];
   }
   // 気になる/行った
   $is_went = '';
   if (!empty($_SESSION['post']['is_went'])) {
-      $is_went = $_SESSION['post']['is_went'];
+    $is_went = $_SESSION['post']['is_went'];
   }
 ?>
 
@@ -97,7 +98,7 @@
     <!-- POST_FORM -->
     <form action="./new_action.php" method="post">
       <!-- ワンタイムトークンの生成 -->
-      <input type="hidden" name="token" value="<?= $token ?>">
+      <!-- <input type="hidden" name="token" value="<?= $token ?>"> -->
 
       <table class="list">
         <tr>
@@ -176,7 +177,11 @@
       <span class="mrg-r20">
         <input type="submit" value="確認">
       </span>
-      <input type="button" value="キャンセル" onclick="location.href='./';">
+      <!-- <input type="button" value="キャンセル" onclick=history.back()> -->
+      <span class="mrg-r20">
+        <input type="button" value="キャンセル" onclick="location.href='./';">
+      </span>
+      <input type="reset" value="リセット" id="add">
       <br><br>
     </form>
   </main>

@@ -15,6 +15,14 @@
     $user = $_SESSION['user'];
   }
 
+  $_SESSION['search'] = $is_search;
+
+  if (!empty($_SESSION['search'])) {
+    $back = header("Location: ../error.php/?seach=$is_search");
+  } else {
+    $back = header('Location: ../error.php');
+  }
+
   try {
     $item = array();
     $db = new TripItemsModel();
@@ -30,5 +38,5 @@
 
   } catch (Exception $e) {
     // var_dump($e);exit;
-    header('Location: ../error/error.php');
+    header('Location: ../error.php');
   }

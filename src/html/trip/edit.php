@@ -188,6 +188,7 @@
       <span class="mrg-r20">
         <input type="submit" value="更新">
       </span>
+      <!-- <input type="button" value="戻る" onclick=history.back()> -->
       <input type="button" value="戻る" onclick="location.href='./';">
       <br><br>
 
