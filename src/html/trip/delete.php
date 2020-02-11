@@ -8,12 +8,12 @@
   // セッションスタート
   SessionUtil::sessionStart();
 
-  if (empty($_SESSION['name'])) {
+  if (empty($_SESSION['user'])) {
     // 未ログインのとき
     header('Location: ../');
   } else {
     // ログイン済みのとき
-    $user = $_SESSION['name'];
+    $user = $_SESSION['user'];
   }
   
   // サニタイズ
@@ -22,7 +22,7 @@
   try {
     // 指定IDの作業項目を取得
     $db = new TripItemsModel();
-    $item = $db->getTripItemById($post['item_id']);
+    $items = $db->getTripItemById($post['item_id']);
 
   } catch (Exception $e) {
     // var_dump($e);
@@ -30,7 +30,7 @@
   }
 
   $is_went = '';
-  if ($item['is_went'] == 0 ) {
+  if ($items['is_went'] == 0 ) {
     $is_went = '気になる';
   } else {
     $is_went = '行った';
@@ -81,19 +81,19 @@
         <tr>
           <th>日時</th>
           <td class="align-l">
-            <?= $item['date'] ?>
+            <?= $items['date'] ?>
           </td>
         </tr>
         <tr>
           <th>ポイント</th>
           <td class="align-l">
-            <?= $item['point'] ?>
+            <?= $items['point'] ?>
           </td>
         </tr>
         <tr>
           <th>地域</th>
           <td class="align-l">
-            <?= $item['area'] ?>
+            <?= $items['area'] ?>
           </td>
         </tr>
         <tr>
@@ -106,13 +106,13 @@
         <tr>
           <th>マップ</th>
           <td class="align-l ggmap">
-            <?= $item['map_item'] ?>
+            <?= $items['map_item'] ?>
           </td>
         </tr>
         <tr>
           <th>備考</th>
           <td class="align-l">
-            <?= $item['comment'] ?>
+            <?= $items['comment'] ?>
           </td>
         </tr>
       </table>

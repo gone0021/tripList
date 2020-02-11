@@ -51,7 +51,7 @@
 
   // マップのバリデーション
   $validityCheck[] = validationUtil::isValidMap (
-    $post['map'], $_SESSION['msg']['map']
+    $post['map_item'], $_SESSION['msg']['map_item']
   );
 
   // 備考のバリデーション
@@ -67,10 +67,6 @@
       exit;
     }
   }
-
-  // user_nameからアイテムを検索する（最初にuserをsessionしているためチェックはしない）
-  // $db = new UsersModel();
-  // $users = $db->getUserForNmae($user);
 
   // バリデーションを通過したらセッションに保存したエラーメッセージをクリアする
   $_SESSION['msg']['error'] = '';
@@ -158,8 +154,8 @@
         <tr>
           <th>マップ</th>
           <td class="align-l ggmap">
-            <?= $post['map'] ?>
-            <input type="hidden"  name="map" id="map" class="item_name" value="<?= $post['map'] ?>">
+            <?= $post['map_item'] ?>
+            <input type="hidden"  name="map_item" id="map_item" class="item_name" value="<?= $post['map_item'] ?>">
           </td>
         </tr>
         <tr>

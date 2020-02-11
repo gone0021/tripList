@@ -35,6 +35,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>新規登録</title>
+  <!-- <link rel="stylesheet" href="../../css/bootstrap.css"> -->
   <link rel="stylesheet" href="../../css/normalize.css">
   <link rel="stylesheet" href="../../css/main.css">
 </head>
@@ -79,8 +80,13 @@
             </td>
           <?php endif ?>
         </tr>
-        <tr>
-          <th class="login_field">
+
+        <!-- <div class="form-group">
+          <label for="email">メールアドレス</label>
+          <input type="email" name="email" id="email" class="form-control">
+        </div> -->
+
+        <th class="login_field">
             メールアドレス
           </th>
           <td class="login_field">

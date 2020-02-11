@@ -2,6 +2,7 @@
   $root = $_SERVER['DOCUMENT_ROOT'];
   $root .= "/data/tripList/html";
   require_once($root."/classes/util/SessionUtil.php");
+  require_once($root."/classes/util/CommonUtil.php");
   require_once($root."/classes/model/TripItemsModel.php");
 
   // セッションスタート
@@ -9,19 +10,22 @@
 
   // ログインの確認
   // $user = $db->checkPassForEmail($post["email"], $post["password"]); メールアドレスとパスワードからユーザー情報を検索
-  if (empty($_SESSION['name'])) {
+  if (empty($_SESSION['user'])) {
     // 未ログインのとき
     header('Location: ../');
   } else {
     // ログイン済みのとき
-    $user = $_SESSION['name'];
+    $user = $_SESSION['user'];
   }
 
+  // サニタイズ
+  $get = CommonUtil::sanitaize($_GET);
+
   try {
-    $item = array();
+    $items = array();
     // 指定IDの作業項目を取得
     $db = new TripItemsModel();
-    $item = $db->getTripItemById($_GET['id']);
+    $items = $db->getTripItemById($get['id']);
  
   } catch (Exception $e) {
     // var_dump($e);
@@ -29,14 +33,11 @@
   }
 
   $is_went = '';
-  if ($item['is_went'] == 0 ) {
+  if ($items['is_went'] == 0 ) {
     $is_went = '気になる';
   } else {
     $is_went = '行った';
   }
-
-  // var_dump($_GET['id'] );
-
 ?>
 
 <!DOCTYPE html>
@@ -77,19 +78,19 @@
         <tr>
           <th>日時</th>
           <td class="align-l">
-            <?= $item['date'] ?>
+            <?= $items['date'] ?>
           </td>
         </tr>
         <tr>
           <th>ポイント</th>
           <td class="align-l">
-            <?= $item['point'] ?>
+            <?= $items['point'] ?>
           </td>
         </tr>
         <tr>
           <th>地域</th>
           <td class="align-l">
-            <?= $item['area'] ?>
+            <?= $items['area'] ?>
           </td>
         </tr>
         <tr>
@@ -102,13 +103,26 @@
         <tr>
           <th>マップ</th>
           <td class="align-l ggmap">
-            <?= $item['map_item'] ?>
+            <?= $items['map_item'] ?>
+
+            <!-- iframeのフォーマット -->
+            <!-- <p><iframe src="" name="map_item" ></iframe></p> -->
+
+            <!-- iframeの例 -->
+            <!-- <p><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13112.534326123272!2d135.5912386!3d34.7522277!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e1f7a3353209%3A0x3c271566781edba9!2z44K444Oj44Ks44O844Kw44Oq44O844Oz!5e0!3m2!1sja!2sjp!4v1581415320399!5m2!1sja!2sjp" name="example"> -->
+
+            <!-- googlemapの地図埋め込み -->
+            <!-- <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13112.534326123272!2d135.5912386!3d34.7522277!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e1f7a3353209%3A0x3c271566781edba9!2z44K444Oj44Ks44O844Kw44Oq44O844Oz!5e0!3m2!1sja!2sjp!4v1581416403748!5m2!1sja!2sjp" 
+            width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="">
+            </iframe> -->
+            </iframe></p>
           </td>
         </tr>
         <tr>
           <th>備考</th>
           <td class="align-l">
-            <?= $item['comment'] ?>
+            <?= $items['comment'] ?>
           </td>
         </tr>
       </table>

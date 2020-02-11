@@ -57,7 +57,7 @@ class ValidationUtil {
       $msg = "メールアドレスを入力してください";
       return false;
     }
-    if (!empty($email) && !preg_match('/^[0-9a-z_./?-]+@([0-9a-z-]+\.)+[0-9a-z-]+$/', $email)) {
+    if (!empty($email) && !preg_match('|^[0-9a-z_./?-]+@([0-9a-z-]+\.)+[0-9a-z-]+$|', $email)) {
       $msg = "メールアドレスを正しく入力してください";
       return false;
     }
@@ -187,7 +187,7 @@ class ValidationUtil {
    */
   public static function isValidMap($map, &$msg): bool {
     $msg = '';
-    preg_match("/^<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $map);
+    preg_match("/<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $map);
 
     if (empty($map)) {
       $msg = "URLを入力してください";

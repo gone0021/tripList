@@ -96,6 +96,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>登録内容の確認</title>
+  <link rel="stylesheet" href="../../css/bootstrap.css">
   <link rel="stylesheet" href="../../css/normalize.css">
   <link rel="stylesheet" href="../../css/main.css">
 </head>

@@ -7,15 +7,7 @@
   // セッションスタート
   SessionUtil::sessionStart();
 
-  // ログインユーザー情報をクリアしてログアウト処理とする
-  $_SESSION["user"] = "";
-  unset($_SESSION["user"]);
-
-  // 念のために他のセッション変数もクリア
-  $_SESSION["post"] = "";
-  unset($_SESSION["post"]);
-  $_SESSION["msg"] = "";
-  unset($_SESSION["msg"]);
+  // セッション変数もクリア
   $_SESSION["search"] = "";
   unset($_SESSION["search"]);
 

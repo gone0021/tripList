@@ -13,20 +13,20 @@
 
   // ログインの確認
   // $user = $db->checkPassForEmail($post["email"], $post["password"]); メールアドレスとパスワードからユーザー情報を検索
-  if (empty($_SESSION['name'])) {
+  if (empty($_SESSION['user'])) {
     // 未ログインのとき
     header('Location: ../');
   } else {
     // ログイン済みのとき
-    $user = $_SESSION['name'];
+    $user = $_SESSION['user'];
   }
 
   // 検索キーワード
-  // if (isset($_SESSION['search'])) {
-  //   $search = $_SESSION['search'];
-  // } else {
-  //   $search = '';
-  // }
+  if (isset($_SESSION['search'])) {
+    $search = $_SESSION['search'];
+  } else {
+    $search = '';
+  }
 
   try {
     // 通常の一覧表示か、検索結果かを保存するフラグ
@@ -53,7 +53,7 @@
     header('Location: ./error.php');
   }
 
-  var_dump($_SESSION['search']);
+  // var_dump($_SESSION['user']['id']);
 
   // 奇数行(odd)・偶数行(even)の判定用カウンタ
   $line = 0;
@@ -158,18 +158,26 @@
         <!-- 操作 -->
         <td>
           <form action="./trip.php" method="post">
-            <input type="hidden" name="item_id" value="<?=$item['id']?>">
-            <input type="submit" value="状態">
+            <?php if ($item['user_id'] === $user['id']): ?>
+              <input type="hidden" name="item_id" value="<?=$item['id']?>">
+              <input type="submit" value="状態">
+            <?php else: ?>
+              <span>操作不可</span>
+            <?php endif ?>
           </form>
 
           <form action="./edit.php" method="post">
-            <input type="hidden" name="item_id" value="<?=$item['id']?>">
-            <input type="submit" value="更新">
+            <?php if ($item['user_id'] === $user['id']): ?>
+              <input type="hidden" name="item_id" value="<?=$item['id']?>">
+              <input type="submit" value="更新">
+            <?php endif ?>
           </form>
 
           <form action="./delete.php" method="post">
-            <input type="hidden" name="item_id" value="<?=$item['id']?>">
-            <input type="submit" value="削除">
+            <?php if ($item['user_id'] === $user['id']): ?>
+              <input type="hidden" name="item_id" value="<?=$item['id']?>">
+              <input type="submit" value="削除">
+            <?php endif ?>
           </form>
         </td>
 
@@ -184,10 +192,15 @@
       <div class="main-footer">
         <form>
           <div class="goback">
-            <input type="button" value="戻る" onclick="location.href='./'; ">
-            <?php unset($_SESSION['search']); ?>
+            <input type="button" value="戻る" onclick="location.href='./back.php';">
           </div>
         </form>
+
+        <!-- <form action="./back.php">
+          <div class="goback">
+            <input type="submit" value="戻る" onclick="location.href='./';">
+          </div>
+        </form> -->
       </div>
     <?php endif ?>
   </main>

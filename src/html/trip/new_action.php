@@ -47,7 +47,7 @@
   );
   // マップ
   $validityCheck[] = validationUtil::isValidMap (
-    $post['map'], $_SESSION['msg']['map']
+    $post['map_item'], $_SESSION['msg']['map_item']
   );
   // 備考
   $validityCheck[] = validationUtil::isValidComment (
@@ -74,15 +74,15 @@
 
 
   // if (preg_match("/<iframe src=\"https:\/\/www\.google\.com\/maps(.*?)<\/iframe>/s", $post['map'])) {
-  if (preg_match("/&lt;iframe src=\&quot;https:\/\/www.google\.com\/maps(.*?)&lt;\/iframe&gt;/s",$post['map'])) {
+  if (preg_match("/&lt;iframe src=\&quot;https:\/\/www.google\.com\/maps(.*?)&lt;\/iframe&gt;/s",$post['map_item'])) {
     $mach = 'yes';
   } else {
     $mach = 'no';
   }
 
-  var_dump($post['map']);
-  echo "<br>";
-  var_dump($mach);
+  // var_dump($post['map_item']);
+  // echo "<br>";
+  // var_dump($mach);
 ?>
 
 <!DOCTYPE html>
@@ -157,8 +157,8 @@
         <tr>
           <th>マップ</th>
           <td class="align-l ggmap">
-            <?= $post['map'] ?>
-            <input type="hidden"  name="map" id="map" class="item_name" value="<?= $post['map'] ?>">
+            <?= $post['map_item'] ?>
+            <input type="hidden"  name="map_item" id="map_item" class="item_name" value="<?= $post['map_item'] ?>">
           </td>
         </tr>
         <tr>

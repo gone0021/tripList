@@ -22,7 +22,7 @@
 
 	} catch (Exception $e) {
 		// var_dump($e);
-		header('Location: ../error/error.php');
+		header('Location: ../error.php');
 	}
 ?>
 

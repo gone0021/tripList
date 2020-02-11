@@ -12,13 +12,13 @@ class CommonUtil {
   public static function sanitaize($before) {
     $after = array();
 
-    // 坂上さん仕様
-    foreach ($_POST as $k => $v) {
+    // postされたデータを
+    foreach ($before as $k => $v) {
       $after[$k] = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
     }
     // GoogleMapのiframeのみデコード
-    if (preg_match("/&lt;iframe src=\&quot;https:\/\/www.google\.com\/maps(.*?)&lt;\/iframe&gt;/s",$after['map'])) {
-      $after['map'] = htmlspecialchars_decode($after['map'], ENT_QUOTES);
+    if (!empty($after['map_item']) && preg_match("/&lt;iframe src=\&quot;https:\/\/www.google\.com\/maps(.*?)&lt;\/iframe&gt;/s",$after['map_item'])) {
+      $after['map_item'] = htmlspecialchars_decode($after['map_item'], ENT_QUOTES);
     }
     return $after;
 

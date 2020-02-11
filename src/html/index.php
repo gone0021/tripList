@@ -34,6 +34,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>ログイン</title>
+  <link rel="stylesheet" href="./css/bootstrap.css">
   <link rel="stylesheet" href="./css/normalize.css">
   <link rel="stylesheet" href="./css/main.css">
 </head>
@@ -59,7 +60,7 @@
       <table class="login">
         <tr>
           <th class="login_field">
-            メールアドレス
+          <label for="email">メールアドレス</label>            
           </th>
           <td class="login_field">
             <input type="email" name="email" id="email" class="login_email" value="<?=$email?>">
@@ -68,7 +69,7 @@
 
         <tr>
           <th class="login_field">
-            パスワード
+            <label for="password">パスワード</label>
           </th>
           <td class="login_field">
             <input type="password" name="password" id="password" class="login_box">

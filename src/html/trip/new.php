@@ -43,8 +43,8 @@
   }
   // マップ
   $map = '';
-  if (!empty($_SESSION['post']['map'])) {
-    $map = $_SESSION['post']['map'];
+  if (!empty($_SESSION['post']['map_item'])) {
+    $map = $_SESSION['post']['map_item'];
   }
   // 備考
   $comment = '';
@@ -140,10 +140,10 @@
         <tr>
           <th>状態</th>
          <td class="align-l">
-          <input type="radio" name="is_went" value="0"<?php if ($is_went == 0) echo " checked" ?>>
-          <span class="mrg-r20">気になる</span>
-          <input type="radio" name="is_went" value="1"<?php if ($is_went == 1) echo " checked" ?>>
-          行った
+           <input type="radio" name="is_went" id="want" value="0"<?php if ($is_went == 0) echo " checked" ?>>
+           <label for="want" class="mrg-r20">気になる</label>
+           <input type="radio" name="is_went" id="went" value="1"<?php if ($is_went == 1) echo " checked" ?>>
+           <label for="went">行った</label>
         </td>
           </td>
         </tr>
@@ -152,11 +152,11 @@
           <th>マップ</th>
           <td class="align-l ggmap">
             <!-- バリデーション -->
-            <?php if (isset($_SESSION['msg']['map'])) : ?>
-              <p class="error"><?= $_SESSION['msg']['map'] ?></p>
+            <?php if (isset($_SESSION['msg']['map_item'])) : ?>
+              <p class="error"><?= $_SESSION['msg']['map_item'] ?></p>
             <?php endif ?>
             <!-- 入力フォーム -->
-            <input type="text"  name="map" id="map" class="item_name" value="<?= $map ?>">
+            <input type="text"  name="map_item" id="map_item" class="item_name" value="<?= $map ?>">
             <p><a href="https://www.google.co.jp/maps/" target="blank">GoogleMap</a>から「共有→地図を埋め込む」のURLを貼り付けてください</p>
           </td>
         </tr>

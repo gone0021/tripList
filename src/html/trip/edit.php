@@ -10,61 +10,58 @@
 
   // ログインの確認
   // $user = $db->checkPassForEmail($post["email"], $post["password"]); メールアドレスとパスワードからユーザー情報を検索
-  if (empty($_SESSION['name'])) {
+  if (empty($_SESSION['user'])) {
     // 未ログインのとき
     header('Location: ../');
   } else {
     // ログイン済みのとき
-    $user = $_SESSION['name'];
+    $user = $_SESSION['user'];
   }
   
   // サニタイズ
   $post = CommonUtil::sanitaize($_POST);
 
   try {
-    $item = array();
+    $items = array();
     if (isset($_SESSION['post'])) {
       // POSTしたデータ
       if (!empty($_SESSION['post']['area'])) {
-        $item['area'] = $_SESSION['post']['area'];
+        $items['area'] = $_SESSION['post']['area'];
       }
 
       if (!empty($_SESSION['post']['point'])) {
-        $item['point'] = $_SESSION['post']['point'];
+        $items['point'] = $_SESSION['post']['point'];
       }
 
       if (!empty($_SESSION['post']['user_id'])) {
-        $item['user_id'] = $_SESSION['post']['user_id'];
+        $items['user_id'] = $_SESSION['post']['user_id'];
       }
 
       if (!empty($_SESSION['post']['date'])) {
-        $item['date'] = $_SESSION['post']['date'];
+        $items['date'] = $_SESSION['post']['date'];
       }
 
       if (!empty($_SESSION['post']['finished'])) {
-        $item['finished'] = $_SESSION['post']['finished'];
+        $items['finished'] = $_SESSION['post']['finished'];
       }
 
       if (!empty($_SESSION['post']['is_went'])) {
-        $item['is_went'] = $_SESSION['post']['is_went'];
+        $items['is_went'] = $_SESSION['post']['is_went'];
       }
 
-      if (!empty($_SESSION['post']['amp_item'])) {
-        $item['amp_item'] = $_SESSION['post']['amp_item'];
+      if (!empty($_SESSION['post']['map_item'])) {
+        $items['map_item'] = $_SESSION['post']['map_item'];
       }
 
       if (!empty($_SESSION['post']['comment'])) {
-        $item['comment'] = $_SESSION['post']['comment'];
+        $items['comment'] = $_SESSION['post']['comment'];
       }
 
     } else {
       // 指定IDの作業項目を取得
       $db = new TripItemsModel();
-      $item = $db->getTripItemById($post['item_id']);
+      $items = $db->getTripItemById($post['item_id']);
     }
-
-    // POSTされてきたitem_idをセッションに保存
-    $_SESSION['item_id'] = $post['item_id'];
 
   } catch (Exception $e) {
     // var_dump($e);
@@ -72,13 +69,14 @@
   }
 
   $is_went = '';
-  if ($item['is_went'] == 0 ) {
+  if ($items['is_went'] == 0 ) {
     $is_went = '気になる';
   } else {
     $is_went = '行った';
   }
+
   // POSTされてきたitem_idをセッションに保存
-  $_SESSION['item_id'] = $post['item_id'];
+  $_SESSION['post']['item_id'] = $post['item_id'];
 
   // var_dump($_SESSION['item_id'] );
 
@@ -128,7 +126,7 @@
             <?php if (isset($_SESSION['msg']['date'])) : ?>
               <p class="error"><?= $_SESSION['msg']['date'] ?></p>
             <?php endif ?>
-            <input type="date" name="date" id="date" class="date" value="<?=$item['date']?>">
+            <input type="date" name="date" id="date" class="date" value="<?=$items['date']?>">
           </td>
         </tr>
 
@@ -138,7 +136,7 @@
             <?php if (isset($_SESSION['msg']['point'])) : ?>
               <p class="error"><?= $_SESSION['msg']['point'] ?></p>
             <?php endif ?>
-            <input type="text" name="point" id="point" class="point" value="<?=$item['point']?>">
+            <input type="text" name="point" id="point" class="point" value="<?=$items['point']?>">
           </td>
         </tr>
 
@@ -148,17 +146,17 @@
             <?php if (isset($_SESSION['msg']['area'])) : ?>
               <p class="error"><?= $_SESSION['msg']['area'] ?></p>
             <?php endif ?>
-            <input type="text" name="area" id="area" class="area" value="<?=$item['area']?>">
+            <input type="text" name="area" id="area" class="area" value="<?=$items['area']?>">
           </td>
         </tr>
 
         <tr>
           <th>状態</th>
          <td class="align-l">
-            <input type="radio" name="is_went" value="0"<?php if ($is_went == 0) echo " checked" ?>>
-            <span class="mrg-r20">気になる</span>
-            <input type="radio" name="is_went" value="1"<?php if ($is_went == 1) echo " checked" ?>>
-            行った
+            <input type="radio" name="is_went" id="want" value="0"<?php if ($is_went == 0) echo " checked" ?>>
+            <label for="want" class="mrg-r20">気になる</label>
+            <input type="radio" name="is_went" id="went" value="1"<?php if ($is_went == 1) echo " checked" ?>>
+            <label for="went">行った</label>
         </td>
           </td>
         </tr>
@@ -166,10 +164,10 @@
         <tr>
           <th>マップ</th>
           <td class="align-l ggmap">
-            <?php if (isset($_SESSION['msg']['map'])) : ?>
-              <p class="error"><?= $_SESSION['msg']['map'] ?></p>
+            <?php if (isset($_SESSION['msg']['map_item'])) : ?>
+              <p class="error"><?= $_SESSION['msg']['map_item'] ?></p>
             <?php endif ?>
-            <input type="text"  name="map" id="map" class="item_name" value="<?= $item['map_item'] ?>">
+            <input type="text"  name="map_item" id="map_item" class="item_name" value="<?= $items['map_item'] ?>">
             <p><a href="https://www.google.co.jp/maps/" target="blank">GoogleMap</a>から「共有→地図を埋め込む」のURLを貼り付けてください</p>
           </td>
         </tr>
@@ -180,7 +178,7 @@
             <?php if (isset($_SESSION['msg']['comment'])) : ?>
               <p class="error"><?= $_SESSION['msg']['comment'] ?></p>
             <?php endif ?>
-            <textarea name="comment" id="comment" cols="60" rows="5" ><?= $item['comment'] ?></textarea>
+            <textarea name="comment" id="comment" cols="60" rows="5" ><?= $items['comment'] ?></textarea>
           </td>
         </tr>
       </table>

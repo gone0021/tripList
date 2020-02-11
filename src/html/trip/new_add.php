@@ -29,7 +29,7 @@
     'point' => $post['point'],
     'date' => $post['date'],
     'is_went' => $post['is_went'],
-    'map_item' => $post['map'],
+    'map_item' => $post['map_item'],
     'comment' => $post['comment'],
   );
 
