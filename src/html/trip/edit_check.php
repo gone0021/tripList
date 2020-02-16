@@ -3,7 +3,7 @@
   $root .= "/data/tripList/html";
   require_once($root."/classes/util/SessionUtil.php");
   require_once($root."/classes/util/CommonUtil.php");
-  require_once($root."/classes/model/TripItemsModel.php");
+  require_once($root."/classes/util/ValidationUtil.php");
 
   // セッションスタート
   SessionUtil::sessionStart();
@@ -12,23 +12,58 @@
   // $_SESSION['user']：ログイン時に取得したユーザー情報
   if (empty($_SESSION['user'])) {
     // 未ログインのとき
-    header('Location: ../');
+    header('Location: ../login/');
   } else {
     // ログイン済みのとき
     $user = $_SESSION['user'];
   }
-  
+
+  // フォームで送信されてきたトークンが正しいかどうか確認（CSRF対策）
+  if (!isset($_SESSION['token']) || $_SESSION['token'] !== $_POST['token']) {
+    $_SESSION['msg']['err'] = "不正な処理が行われました。";
+    header('Location: ./edit.php');
+    exit;
+  }
+
   // サニタイズ
   $post = CommonUtil::sanitaize($_POST);
 
-  try {
-    // 指定IDの作業項目を取得
-    $db = new TripItemsModel();
-    $items = $db->getTripItemById($post['item_id']);
-  } catch (Exception $e) {
-    // var_dump($e);
-    header('Location: ../error.php');
+  // POSTされてきた値をSESSIONに代入（入力画面で再表示）
+  $_SESSION['post'] = $post;
+
+  // バリデーションチェック
+  $validityCheck = array();
+  // 日付
+  $validityCheck[] = validationUtil::isDate (
+    $post['date'], $_SESSION['msg']['date']
+  );
+  // ポイント名
+  $validityCheck[] = validationUtil::isValidItem (
+    $post['point'], $_SESSION['msg']['point']
+  );
+  // 地域名
+  $validityCheck[] = validationUtil::isValidItem (
+    $post['area'], $_SESSION['msg']['area']
+  );
+  // マップ
+  $validityCheck[] = validationUtil::isValidMap (
+    $post['map_item'], $_SESSION['msg']['map_item']
+  );
+  // 備考
+  $validityCheck[] = validationUtil::isValidComment (
+    $post['comment'], $_SESSION['msg']['comment']
+  );
+  // バリデーションで不備があった場合は登録ページへ戻る
+  foreach ($validityCheck as $k => $v) {
+    // $vにnullが代入されている可能性があるので「===」で比較
+    if ($v === false) {
+      header('Location: ./edit.php');
+      exit;
+    }
   }
+
+  // バリデーションを通過したらSESSIONに保存したエラーメッセージをクリアする
+  $_SESSION['msg']['error'] = '';
 
   // 気になる、行ったの文字列置き換え
   $str_went = '';
@@ -38,25 +73,27 @@
     $str_went = '行った';
   }
 
-  // POSTされてきたitem_idをセッションに保存
-  $_SESSION['post']['item_id'] = $post['item_id'];
+  // map_itemのエンコード（iframeを直接入れるとダブルクオーテーションで途切れるため）
+  $encode = '';
+  $enc_map_item = base64_encode($post['map_item']);
+  // $_SESSION['enc_map_item'] = $enc_map_item;
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<title>削除確認</title>
-<link rel="stylesheet" href="../css/normalize.css">
-<link rel="stylesheet" href="../css/bootstrap.css">
-<link rel="stylesheet" href="../css/main.css">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>内容の更新</title>
+  <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 <div class="container">
   <!-- body-header -->
   <header class="">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <h2 class="navbar-brand mt-2">削除確認</h2>
+      <h2 class="navbar-brand mt-2">内容の更新</h2>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -69,9 +106,11 @@
           </li>
 
           <!-- 新規登録 -->
-          <li class="nav-item">
-            <a class="nav-link" href="./new.php">new</a>
-          </li>
+          <form action="./" method="get">
+            <li class="nav-item">
+              <a class="nav-link" href="./new.php">new</a>
+            </li>
+          </form>
 
           <!-- ドロップダウン -->
           <li class="nav-item dropdown">
@@ -96,17 +135,21 @@
 
   <!-- body-main -->
   <main>
-    <p class="mt-5">
-      下記の項目を削除します。よろしいですか？
-    </p>
+    <?php if (!empty($_SESSION['msg']['error'])): ?>
+        <p class="error">
+            <?=$_SESSION['msg']['error']?>
+        </p>
+    <?php endif ?>
+  
     <!-- 送信フォーム -->
-    <form action="./delete_action.php" method="post">
+    <form action="./edit_action.php" method="post">
       <table class="table mt-3">
         <!-- ※日時：date -->
         <tr>
           <th scope="row">日時</th>
           <td class="align-l">
-            <?= $items['date'] ?>
+            <?= $post['date'] ?>
+            <input type="hidden" name="date" value="<?= $post['date'] ?>" id="date" class="date">
           </td>
         </tr>
 
@@ -114,7 +157,8 @@
         <tr>
           <th scope="row">ポイント</th>
           <td class="align-l">
-            <?= $items['point'] ?>
+            <?= $post['point'] ?>
+            <input type="hidden" name="point" value="<?= $post['point'] ?>" id="point" class="item_name">
           </td>
         </tr>
 
@@ -122,7 +166,8 @@
         <tr>
           <th scope="row">地域</th>
           <td class="align-l">
-            <?= $items['area'] ?>
+            <?= $post['area'] ?>
+            <input type="hidden" name="area" value="<?= $post['area'] ?>" id="area" class="item_name">
           </td>
         </tr>
 
@@ -131,6 +176,7 @@
           <th scope="row">状態</th>
           <td class="align-l">
             <?= $str_went ?>
+            <input type="hidden" name="is_went" value=<?= $post['is_went'] ?>>
           </td>
         </tr>
 
@@ -138,7 +184,8 @@
         <tr>
           <th scope="row">マップ</th>
           <td class="align-l ggmap">
-            <?= $items['map_item'] ?>
+            <?= $post['map_item'] ?>
+            <input type="hidden"  name="map_item" class="item_name" value="<?= $enc_map_item ?>" id="map_item">
           </td>
         </tr>
 
@@ -146,7 +193,8 @@
         <tr>
           <th scope="row">備考</th>
           <td class="align-l">
-            <?= $items['comment'] ?>
+            <?= $post['comment'] ?>
+            <input type="hidden"  name="comment" value="<?= $post['comment'] ?>" id="comment" class="item_name">
           </td>
         </tr>
       </table>
@@ -154,16 +202,20 @@
       <!-- ※ボタン -->
       <div class="mb-5">
         <span class="mr-3">
-          <input type="submit" value="削除" class="btn btn-outline-primary">
+          <input type="submit" value="登録" class="btn btn-outline-primary">
         </span>
-        <input type="button" value="戻る" onclick="location.href='./';" class="btn btn-outline-primary">
+        <input type="button" value="戻る" onclick="location.href='./edit.php';" class="btn btn-outline-primary">
       </div>
-
     </form>
   </main>
 
   <footer>
+
   </footer>
+  <?php
+    unset($_SESSION['msg']); 
+    // var_dump($user);
+  ?>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

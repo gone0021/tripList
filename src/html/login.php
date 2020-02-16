@@ -19,26 +19,25 @@
     $user = $db->checkPassForEmail($post["email"], $post["password"]);
 
     if (empty($user)) {
-      // ユーザーの情報が取得できなかったとき
-      // エラーメッセージをセッション変数に保存 → ログインページに表示
+      // ※ユーザーの情報が取得できなかったとき
+      // エラーメッセージをSESSIONに保存
       $_SESSION["msg"]["error"] = "情報が一致しません";
 
-      // POSTされてきたメールアドレスをセッション変数に保存→ログインページのメールアドレスのテキストボックスに表示
+      // POSTされてきたメールアドレスをSESSIONに保存
       $_SESSION["post"]["email"] = $post["email"];
-      $_SESSION["post"]["password"] = $post["password"];
 
       // ログインページへリダイレクト
       header("Location: ./");
     } else {
-      // メールアドレスの情報が取得できたとき
-      // ユーザー情報をセッション変数に保存（メニューで表示するためnameを保存する）
+      // ※ユーザー情報が取得できたとき
+      // ユーザー情報をSESSIONに保存
       $_SESSION["user"] = $user;
 
-      // セッション変数に保存されているエラーメッセージをクリア
+      // SESSIONに保存されているエラーメッセージをクリア
       $_SESSION["msg"]["error"] = "";
       unset($_SESSION["msg"]["error"]);
 
-      // セッション変数に保存されているPOSTされてきたデータをクリア
+      // SESSIONに保存されているPOSTされてきたデータをクリア
       $_SESSION["post"] = "";
       unset($_SESSION["post"]);
 

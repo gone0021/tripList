@@ -4,58 +4,58 @@
   require_once($root."/classes/util/SessionUtil.php");
   require_once($root."/classes/util/CommonUtil.php");
 
-  //日付の取得
-  $date = new DateTime("Asia/Tokyo");
-  $today = $date->format("Y-m-d");
+  // セッションスタート
+  SessionUtil::sessionStart();
 
   // トークンの生成
   $token = bin2hex(openssl_random_pseudo_bytes(108));
   $_SESSION['token'] = $token;
 
-  // セッションスタート
-  SessionUtil::sessionStart();
-
-  // ログインの確認
-  // $user = $db->checkPassForEmail($post["email"], $post["password"]); メールアドレスとパスワードからユーザー情報を検索
-  if (empty($_SESSION['name'])) {
+  // ※ログインの確認
+  // $_SESSION['user']：ログイン時に取得したユーザー情報
+  if (empty($_SESSION['user'])) {
     // 未ログインのとき
     header('Location: ../');
   } else {
     // ログイン済みのとき
-    $user = $_SESSION['name'];
+    $user = $_SESSION['user'];
   }
 
-  // セッションに保存したPOSTデータの呼び出し
+  // DateTimeクラスの取得
+  $date = new DateTime("Asia/Tokyo");
+  $today = $date->format("Y-m-d");
+
+  // ※SESSIONに保存したPOSTデータの呼び出し
   // 日付
   $date = date('Y-m-d');
   if (!empty($_SESSION['post']['date'])) {
     $date = $_SESSION['post']['date'];
-  }
-  // 地域
-  $area = '';
-  if (!empty($_SESSION['post']['area'])) {
-    $area =  $_SESSION['post']['area'];
   }
   // ポイント
   $point = '';
   if (!empty($_SESSION['post']['point'])) {
     $point = $_SESSION['post']['point'];
   }
-  // マップ
-  $map = '';
-  if (!empty($_SESSION['post']['map_item'])) {
-    $map = $_SESSION['post']['map_item'];
+  // 行った、気になる（emptyが0をfalseと返すためissetで判定）、かつ初期値を気になるで設定
+  $is_went = 0;
+  if (isset($_SESSION['post']['is_went'])) {
+    $is_went = $_SESSION['post']['is_went'];
   }
-  // 備考
+  // 地域
+  $area = '';
+  if (!empty($_SESSION['post']['area'])) {
+    $area =  $_SESSION['post']['area'];
+  }
+  // マップはgooglemapからURLで座標情報を取得するためsessionに保存しない（URLのため意味がない）
+  // 備考（コメントは無記入でOKのため見つからない場合に無記入を上書き）
   $comment = '';
   if (!empty($_SESSION['post']['comment'])) {
     $comment = $_SESSION['post']['comment'];
+  } else {
+    $items['comment'] = '';
   }
-  // 気になる/行った
-  $is_went = '';
-  if (!empty($_SESSION['post']['is_went'])) {
-    $is_went = $_SESSION['post']['is_went'];
-  }
+
+  // var_dump($_SESSION['post']);
 ?>
 
 <!DOCTYPE html>
@@ -64,125 +64,162 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>新規登録</title>
   <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
   <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 <div class="container">
-  <header>
-      <div class="title">
-        <h1>新規登録</h1>
-      </div>
+  <!-- body-header -->
+  <header class="">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <h2 class="navbar-brand mt-2">新規登録</h2>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-      <div class="login_info">
-        <ul>
-          <li>
-            ようこそ<?=$user['name'] ?>さん
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <!-- Homeに戻る -->
+          <li class="nav-item active">
+            <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
           </li>
-  
-          <li>
-            <form>
-              <input type="button" value="ログアウト" onclick="location.href='../logout.php';">
-            </form>
+
+          <!-- 新規登録 -->
+          <form action="./" method="get">
+            <li class="nav-item">
+              <a class="nav-link" href="./new.php">new</a>
+            </li>
+          </form>
+
+          <!-- ドロップダウン -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <?=$user['name'] ?>さん
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="../logout.php">logout</a>
+            </div>
           </li>
         </ul>
+
+        <!-- 検索フォーム -->
+        <form action="./" method="get" class="form-inline my-2 my-lg-0">
+          <input type="search" name="search" id="search" class="form-control mr-sm-2" placeholder="Search" aria-label="Search">
+          <input type="submit" value="🔍検索" class="btn btn-outline-primary">
+        </form>
+
       </div>
+    </nav>
   </header>
 
+  <!-- body-main -->
   <main>
+    <!-- エラーメッセージ -->
     <?php if (!empty($_SESSION['msg']['error'])): ?>
-        <p class="error">
-            <?=$_SESSION['msg']['error']?>
-        </p>
+      <p class="error">
+        <?=$_SESSION['msg']['error']?>
+      </p>
     <?php endif ?>
   
-    <!-- POST_FORM -->
-    <form action="./new_action.php" method="post">
-      <!-- ワンタイムトークンの生成 -->
-      <!-- <input type="hidden" name="token" value="<?= $token ?>"> -->
+   <!-- 送信フォーム -->
+    <form action="./new_check.php" method="post">
+      <!-- トークンの送信 -->
+      <input type="hidden" name="token" value="<?= $token ?>">
 
-      <table class="list">
+      <table class="table mt-3">
+        <!-- ※日時：date -->
         <tr>
-          <th>日時</th>
+          <th scope="row" class="pt-4">日時</th>
           <td class="align-l">
             <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['date'])) : ?>
               <p class="error"><?= $_SESSION['msg']['date'] ?></p>
             <?php endif ?>
             <!-- 入力フォーム -->
-            <input type="date" name="date" id="date" class="date" value="<?= $date ?>">
+            <input type="date" name="date" value="<?= $date ?>" id="date" class="form-control">
           </td>
         </tr>
 
+        <!-- ※ポイント：point -->
         <tr>
-          <th>ポイント</th>
+          <th scope="row" class="pt-4">ポイント</th>
           <td class="align-l">
             <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['point'])) : ?>
               <p class="error"><?= $_SESSION['msg']['point'] ?></p>
             <?php endif ?>
             <!-- 入力フォーム -->
-            <input type="text" name="point" id="point" class="item_name" value="<?= $point ?>">
+            <input type="text" name="point" value="<?= $point ?>" id="point" class="form-control">
           </td>
         </tr>
 
+        <!-- ※地域：area -->
         <tr>
-          <th>地域</th>
+          <th scope="row" class="pt-4">地域</th>
           <td class="align-l">
             <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['area'])) : ?>
               <p class="error"><?= $_SESSION['msg']['area'] ?></p>
             <?php endif ?>
             <!-- 入力フォーム -->
-            <input type="text" name="area" id="area" class="item_name" value="<?= $area ?>">
+            <input type="text" name="area" value="<?= $area ?>" id="area" class="form-control">
           </td>
         </tr>
 
+        <!-- ※状態：is_went -->
         <tr>
-          <th>状態</th>
+          <th scope="row" class="">状態</th>
          <td class="align-l">
-           <input type="radio" name="is_went" id="want" value="0"<?php if ($is_went == 0) echo " checked" ?>>
-           <label for="want" class="mrg-r20">気になる</label>
-           <input type="radio" name="is_went" id="went" value="1"<?php if ($is_went == 1) echo " checked" ?>>
+           <input type="radio" name="is_went" value="0" <?php if ($is_went == 0) echo "checked" ?> id="want" class="">
+           <label for="want" class="mr-3">気になる</label>
+           <input type="radio" name="is_went" value="1" <?php if ($is_went == 1) echo "checked" ?> id="went" class="">
            <label for="went">行った</label>
         </td>
           </td>
         </tr>
 
+        <!-- ※マップ：map -->
         <tr>
-          <th>マップ</th>
+          <th scope="row" class="pt-4">マップ</th>
           <td class="align-l ggmap">
             <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['map_item'])) : ?>
               <p class="error"><?= $_SESSION['msg']['map_item'] ?></p>
             <?php endif ?>
+            <!-- SESSIONされたマップ情報の取得 -->
+            
             <!-- 入力フォーム -->
-            <input type="text"  name="map_item" id="map_item" class="item_name" value="<?= $map ?>">
+            <!-- googlemapから位置情報を取得するためsessionを取らずvalueを入れない（URLを埋め込む意味がない） -->
+            <input type="text"  name="map_item" id="map_item" class="form-control">
             <p><a href="https://www.google.co.jp/maps/" target="blank">GoogleMap</a>から「共有→地図を埋め込む」のURLを貼り付けてください</p>
           </td>
         </tr>
 
+        <!-- ※備考：comment -->
         <tr>
-          <th>備考</th>
+          <th scope="row" class="pt-3">備考</th>
           <td class="align-l">
             <!-- バリデーション -->
             <?php if (isset($_SESSION['msg']['comment'])) : ?>
               <p class="error"><?= $_SESSION['msg']['comment'] ?></p>
             <?php endif ?>
             <!-- 入力フォーム -->
-            <textarea name="comment" id="comment" cols="60" rows="5" ><?= $comment ?></textarea>
+            <textarea name="comment" id="comment" class="form-control" cols="60" rows="5" ><?= $comment ?></textarea>
           </td>
         </tr>
       </table>
 
-      <span class="mrg-r20">
-        <input type="submit" value="確認">
-      </span>
-      <!-- <input type="button" value="キャンセル" onclick=history.back()> -->
-      <span class="mrg-r20">
-        <input type="button" value="キャンセル" onclick="location.href='./';">
-      </span>
-      <input type="reset" value="リセット" id="add">
-      <br><br>
+      <!-- ※ボタン -->
+      <div class="mb-5">
+        <span class="mr-3">
+          <input type="submit" value="確認" class="btn btn-outline-primary">
+        </span>
+        <!-- <input type="button" value="キャンセル" onclick=history.back()> -->
+        <span class="mr-3">
+          <input type="button" value="キャンセル" onclick="location.href='./';" class="btn btn-outline-primary">
+        </span>
+        <input type="reset" value="リセット" class="btn btn-outline-primary">
+      </div>
     </form>
   </main>
 
@@ -193,5 +230,10 @@
     unset($_SESSION['msg']); 
   ?>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 </body>
 </html>

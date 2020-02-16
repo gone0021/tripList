@@ -7,21 +7,23 @@
   // セッションスタート
   SessionUtil::sessionStart();
 
+  // トークンの生成
   $token = bin2hex(openssl_random_pseudo_bytes(108));
   $_SESSION['token'] = $token;
 
-  // セッションに保存したPOSTデータ
+  // ※ SESSIONに保存したPOSTデータ（パスワードは保存しない）
+  // ユーザー名
   $name = "";
   if (!empty($_SESSION['post']['name'])) {
     $name =  $_SESSION['post']['name'];
   }
-
+  // メールアドレス
   $email = "";
   if (!empty($_SESSION['post']['email'])) {
     $email = $_SESSION['post']['email'];
   }
-
-  $birthday = date("");
+  // 誕生日
+  $birthday = date("2020-01-01");
   if (!empty($_SESSION['post']['birthday'])) {
     $birthday = $_SESSION['post']['birthday'];
   }
@@ -37,124 +39,101 @@
   <title>新規登録</title>
   <!-- <link rel="stylesheet" href="../../css/bootstrap.css"> -->
   <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/bootstrap.css">
   <link rel="stylesheet" href="../../css/main.css">
 </head>
 
 <body>
 <div class="container">
+  <!-- body-header -->
   <header>
     <h1 id="head-l">新規登録</h1>
     <br>
     <div class="align-r-m3"><a href="../../">ログイン画面へ</a></div>
   </header>
 
+  <!-- body-main -->
   <main>
-    <!-- 登録内容の確認へ -->
+    <!-- エラーメッセージ -->
+    <?php if (!empty($_SESSION["msg"]["error"])) : ?>
+      <p class="error">
+        <?= $_SESSION["msg"]["error"] ?>
+      </p>
+    <?php endif ?>
+
+    <!-- 送信フォーム -->
     <form action="./check.php" method="post">
-      <!-- ワンタイムトークンの生成 -->
+      <!-- トークンの送信 -->
       <input type="hidden" name="token" value="<?= $token ?>">
 
-      <table class="login">
-        <tr>
-          <th></th>
-          <?php if (isset($_SESSION['msg']['name'])) : ?>
-            <td>
-              <p class="error"><?= $_SESSION['msg']['name'] ?></p>
-            </td>
-          <?php endif ?>
-        </tr>
-        <tr>
-          <th class="login_field">
-            ユーザー名
-          </th>
-          <td class="login_field">
-            <input type="text" name="name" id="name" class="login_box" value="<?=$name?>">
-          </td>
-        </tr>
+      <!-- ※ユーザー名 -->
+      <div class="form-group col-6 mx-auto mt-3">
+        <!-- バリデーション -->
+        <?php if (isset($_SESSION['msg']['name'])) : ?>
+          <p class="error"><?= $_SESSION['msg']['name'] ?></p>
+        <?php endif ?>
+        <!-- 入力フォーム -->
+        <label for="name">ユーザー名</label>
+        <input type="text" name="name" value="<?=$name?>" id="name" class="form-control">
+      </div>
 
-        <tr>
-          <th></th>
-          <?php if (isset($_SESSION['msg']['email'])) : ?>
-            <td>
-              <p class="error"><?= $_SESSION['msg']['email'] ?></p>
-            </td>
-          <?php endif ?>
-        </tr>
+      <!-- ※メールアドレス -->
+      <div class="form-group col-6 mx-auto">
+        <!-- バリデーション -->
+        <?php if (isset($_SESSION['msg']['email'])) : ?>
+            <p class="error"><?= $_SESSION['msg']['email'] ?></p>
+        <?php endif ?>
+        <!-- 入力フォーム -->
+        <label for="email">メールアドレス</label>
+        <input type="text" name="email" value="<?=$email?>" id="email" class="form-control">
+      </div>
 
-        <!-- <div class="form-group">
-          <label for="email">メールアドレス</label>
-          <input type="email" name="email" id="email" class="form-control">
-        </div> -->
+      <!-- ※誕生日 -->
+      <div class="form-group col-6 mx-auto">
+        <!-- バリデーション -->
+        <?php if (isset($_SESSION['msg']['birthday'])) : ?>
+          <p class="error"><?= $_SESSION['msg']['birthday'] ?></p>
+        <?php endif ?>
+        <!-- 入力フォーム -->
+        <label for="birthday">誕生日（パスワードの再設定に使用）</label>
+        <input type="date" name="birthday" value="<?=$birthday?>" id="birthday" class="form-control">
+      </div>
 
-        <th class="login_field">
-            メールアドレス
-          </th>
-          <td class="login_field">
-            <input type="email" name="email" id="email" class="login_email" value="<?=$email?>">
-          </td>
-        </tr>
+      <!-- ※パスワード -->
+      <div class="form-group col-6 mx-auto">
+        <!-- バリデーション -->
+        <?php if (isset($_SESSION['msg']['pass1'])) : ?>
+          <p class="error"><?= $_SESSION['msg']['pass1'] ?></p>
+        <?php endif ?>
+        <!-- 入力フォーム -->
+        <label for="pass1">パスワード（半角英数字で8文字以上）</label>
+        <input type="password" name="pass1" id="pass1" class="form-control">
+      </div>
 
-        <tr>
-          <th></th>
-          <?php if (isset($_SESSION['msg']['birthday'])) : ?>
-            <td>
-              <p class="error"><?= $_SESSION['msg']['birthday'] ?></p>
-            </td>
-          <?php endif ?>
-        </tr>
-        <tr>
-          <th class="login_field">
-            誕生日
-          </th>
-          <td class="login_field">
-            <input type="date" name="birthday" id="birthday" class="login_box" value="<?=$birthday?>">
-          </td>
-        </tr>
-        <tr>
-          <th></th>
-          <td>※ パスワードの再設定に使用</td>
-        </tr>
+      <!-- ※確認用パスワード（送信対象） -->
+      <div class="form-group col-6 mx-auto">
+        <!-- バリデーション -->
+        <?php if (isset($_SESSION['msg']['pass2'])) : ?>
+          <p class="error"><?= $_SESSION['msg']['pass2'] ?></p>
+        <?php endif ?>
+        <!-- 入力フォーム -->
+        <label for="pass2">パスワード（確認用）</label>
+        <input type="password" name="pass2" id="pass2" class="form-control">
+      </div>
 
-        <tr>
-          <th></th>
-          <?php if (isset($_SESSION['msg']['pass1'])) : ?>
-            <td>
-              <p class="error"><?= $_SESSION['msg']['pass1'] ?></p>
-            </td>
-          <?php endif ?>
-        </tr>
-        <tr>
-          <th class="login_field">
-            パスワード<br>（半角英数字で8文字以上）
-          </th>
-          <td class="login_field">
-            <input type="password" name="pass1" id="pass1" class="login_box">
-            </td>
-        </tr>
+      <!-- ※ボタン -->
+      <div class="my-2">
+        <input type="submit" value="確認" class="btn btn-primary">
+        <input type="reset" value="リセット" class="btn btn-outline-primary">
+      </div>
 
-        <tr>
-          <th></th>
-          <?php if (isset($_SESSION['msg']['pass2'])) : ?>
-            <td>
-              <p class="error"><?= $_SESSION['msg']['pass2'] ?></p>
-            </td>
-          <?php endif ?>
-        </tr>
-        <tr>
-          <th class="login_field">
-            パスワード（確認用）
-          </th>
-          <td class="login_field">
-            <input type="password" name="pass2" id="pass2" class="login_box">
-          </td>
-        </tr>
-
-      </table>
-      <input type="submit" value="確認" id="add">
-      <input type="reset" value="リセット" id="add">
     </form>
+
     <br>
-    <a href="../pass/">パスワードを忘れた</a>
+    <div>
+      <a href="../pass/">パスワードを忘れた</a>
+    </div>
+    
   </main>
 
   <footer>

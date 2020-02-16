@@ -28,7 +28,7 @@ class
 }
 
 .even {
-  background-color: #d9e2f3;
+  background-color: #f0f0f0;
 }
 
 .flt-l{
@@ -78,7 +78,7 @@ class
 }
 
 .odd {
-  background-color: #f0f0f0;
+  background-color: #none;
 }
 
 .search {

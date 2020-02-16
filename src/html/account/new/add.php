@@ -6,6 +6,7 @@
   require_once($root."/classes/util/ValidationUtil.php");
   require_once($root."/classes/model/UsersModel.php");
 
+  // セッションスタート
   SessionUtil::sessionStart();
 
   // サニタイズ

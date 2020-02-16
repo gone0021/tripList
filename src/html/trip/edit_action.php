@@ -1,187 +1,94 @@
 <?php
-  $root = $_SERVER['DOCUMENT_ROOT'];
+  $root = $_SERVER["DOCUMENT_ROOT"];
   $root .= "/data/tripList/html";
   require_once($root."/classes/util/SessionUtil.php");
   require_once($root."/classes/util/CommonUtil.php");
-  require_once($root."/classes/util/ValidationUtil.php");
+  require_once($root."/classes/model/TripItemsModel.php");
 
   // セッションスタート
   SessionUtil::sessionStart();
 
   // ログインの確認
-  // $user = $db->checkPassForEmail($post["email"], $post["password"]); メールアドレスとパスワードからユーザー情報を検索
-  if (empty($_SESSION['name'])) {
+  // $_SESSION['user']：ログイン時に取得したユーザー情報
+  if (empty($_SESSION['user'])) {
     // 未ログインのとき
     header('Location: ../login/');
   } else {
     // ログイン済みのとき
-    $user = $_SESSION['name'];
+    $user = $_SESSION['user'];
   }
-
-  // フォームで送信されてきたトークンが正しいかどうか確認（CSRF対策）
-  // if (!isset($_SESSION['token']) || $_SESSION['token'] !== $_POST['token']) {
-  //   $_SESSION['msg']['err'] = "不正な処理が行われました。";
-  //   header('Location: ./new.php');
-  //   exit;
-  // }
 
   // サニタイズ
   $post = CommonUtil::sanitaize($_POST);
 
-  // POSTされてきた値をセッションに代入
-  $_SESSION['post'] = $post;
+  // map_itemはbase4で6エンコードされているためデコードしてdbに入れる
+  $dec_map_item = '';
+  $dec_map_item = base64_decode($post['map_item']);
 
-  // バリデーションチェック
-  $validityCheck = array();
-
-  // 日付のバリデーション
-  $validityCheck[] = validationUtil::isDate (
-    $post['date'], $_SESSION['msg']['date']
+  // データベースに登録する内容を連想配列にする。
+  $data = array (
+    'id' => $_SESSION['item_id'],
+    'user_id' => $user['id'],
+    'area' => $post['area'],
+    'point' => $post['point'],
+    'date' => $post['date'],
+    'is_went' => $post['is_went'],
+    'map_item' => $dec_map_item,
+    'comment' => $post['comment'],
   );
 
-  // 地域名のバリデーション
-  $validityCheck[] = validationUtil::isValidItem (
-    $post['area'], $_SESSION['msg']['area']
-  );
+  // アイテムの削除とエラー処理
+  try {
+    $db = new TripItemsModel();
+    $db->updateTripItemById($data);
 
-  // ポイント名のバリデーション
-  $validityCheck[] = validationUtil::isValidItem (
-    $post['point'], $_SESSION['msg']['point']
-  );
-
-  // マップのバリデーション
-  $validityCheck[] = validationUtil::isValidMap (
-    $post['map_item'], $_SESSION['msg']['map_item']
-  );
-
-  // 備考のバリデーション
-  $validityCheck[] = validationUtil::isValidComment (
-    $post['comment'], $_SESSION['msg']['comment']
-  );
-
-  // バリデーションで不備があった場合
-  foreach ($validityCheck as $k => $v) {
-    // $vにnullが代入されている可能性があるので「===」で比較
-    if ($v === false) {
-      header('Location: ./new.php');
-      exit;
-    }
+  } catch (Exception $e) {
+    // var_dump($e);exit;
+    header('Location: ../error.php');
   }
-
-  // バリデーションを通過したらセッションに保存したエラーメッセージをクリアする
-  $_SESSION['msg']['error'] = '';
-
-  $is_went = '';
-  if ($post['is_went'] == 0 ) {
-    $is_went = '気になる';
-  } else {
-    $is_went = '行った';
-  }
-
-  // var_dump($_SESSION['item_id'] );
-
-?>
+  ?>
 
 <!DOCTYPE html>
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>内容の更新</title>
+  <title>更新完了</title>
   <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
   <link rel="stylesheet" href="../css/main.css">
 </head>
+
 <body>
 <div class="container">
-  <header>
-      <div class="title">
-        <h1>内容の更新</h1>
-      </div>
-
-      <div class="login_info">
-        <ul>
-        <li>
-            ようこそ<?=$user['name'] ?>さん
-          </li>
-  
-          <li>
-            <form>
-              <input type="button" value="ログアウト" onclick="location.href='../logout.php';">
-            </form>
-          </li>
-        </ul>
-      </div>
+  <header class="my-3">
+    <h1 id="head-l">更新完了</h1>
   </header>
 
   <main>
-    <?php if (!empty($_SESSION['msg']['error'])): ?>
-        <p class="error">
-            <?=$_SESSION['msg']['error']?>
-        </p>
-    <?php endif ?>
-  
-    <!-- POST_FORM -->
-    <form action="./edit_add.php" method="post">
-      <table class="list">
-        <tr>
-          <th>日時</th>
-          <td class="align-l">
-            <?= $post['date'] ?>
-            <input type="hidden" name="date" id="date" class="date" value="<?= $post['date'] ?>">
-          </td>
-        </tr>
-        <tr>
-          <th>ポイント</th>
-          <td class="align-l">
-            <?= $post['point'] ?>
-            <input type="hidden" name="point" id="point" class="item_name" value="<?= $post['point'] ?>">
-          </td>
-        </tr>
-        <tr>
-          <th>地域</th>
-          <td class="align-l">
-            <?= $post['area'] ?>
-            <input type="hidden" name="area" id="area" class="item_name" value="<?= $post['area'] ?>">
-          </td>
-        </tr>
-        <tr>
-          <th>状態</th>
-         <td class="align-l">
-           <?= $is_went ?>
-          <input type="hidden" name="is_went" value=<?= $post['is_went'] ?>>
-        </td>
-          </td>
-        </tr>
-        <tr>
-          <th>マップ</th>
-          <td class="align-l ggmap">
-            <?= $post['map_item'] ?>
-            <input type="hidden"  name="map_item" id="map_item" class="item_name" value="<?= $post['map_item'] ?>">
-          </td>
-        </tr>
-        <tr>
-          <th>備考</th>
-          <td class="align-l">
-            <?= $post['comment'] ?>
-            <input type="hidden"  name="comment" id="comment" class="item_name" value="<?= $post['comment'] ?>">
-          </td>
-        </tr>
-      </table>
+    <table class="table">
+      <tr>
+        <th>更新が完了しました</th>
+      </tr>
 
-      <span class="mrg-r20">
-        <input type="submit" value="登録">
-      </span>
-      <input type="button" value="戻る" onclick="location.href='./new.php';">
-      <br><br>
-    </form>
+      <tr>
+        <td>
+          <a href="./">メインページへ</a>
+        </td>
+      </tr>
+    </table>
   </main>
 
   <footer>
-
   </footer>
   <?php
-    unset($_SESSION['msg']); 
-    // var_dump($user);
+    unset($_SESSION['post']); 
+    unset($_SESSION['item_id']); 
   ?>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 </body>
 </html>

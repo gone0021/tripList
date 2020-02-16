@@ -11,8 +11,8 @@
   // 設定済みのセッションに保存されたPOSTデータを削除
   unset($_SESSION['post']);
 
-  // ログインの確認
-  // $user = $db->checkPassForEmail($post["email"], $post["password"]); メールアドレスとパスワードからユーザー情報を検索
+  // ※ログインの確認
+  // $_SESSION['user']：ログイン時に取得したユーザー情報
   if (empty($_SESSION['user'])) {
     // 未ログインのとき
     header('Location: ../');
@@ -33,7 +33,7 @@
     $isSearch = false;
     $db = new TripItemsModel();
 
-    // searchに値があればsearchで検索する
+    // searchに値があればsearchで検索
     if (isset($_GET['search'])) {
       // GETに項目があるときは検索
       $_SESSION['search'] = $_GET['search'];
@@ -41,11 +41,12 @@
       $isSearch = true;
       $items = $db->getTripItemBySearch($search);
     } else if (isset($_SESSION['search'])) {
+      // SESSIONに項目がある時はSESSIONの項目で検索
       $search =  $_SESSION['search'];
       $isSearch = true;
       $items = $db->getTripItemBySearch($search);
     } else {
-      // GETに項目がないときは、作業項目を全件取得
+      // GET・SESSIONに項目がないときは項目を全件取得
       $items = $db->getTripItemAll();
     }
   } catch (Exception $e) {
@@ -53,10 +54,10 @@
     header('Location: ./error.php');
   }
 
-  // var_dump($_SESSION['user']['id']);
-
   // 奇数行(odd)・偶数行(even)の判定用カウンタ
   $line = 0;
+
+  // var_dump($_SESSION['user']['id']);
 ?>
 
 <!DOCTYPE html>
@@ -65,55 +66,65 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>リスト一覧</title>
   <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
   <link rel="stylesheet" href="../css/main.css">
 </head>
 
 <body>
 <div class="container">
-  <header>
-    <div class="title">
-      <h1>リスト一覧</h1>
-    </div>
-  
-    <div class="login_info">
-      <ul>
-        <li>
-          ようこそ<?=$user['name'] ?>さん
-        </li>
+  <!-- body-header -->
+  <header class="">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <h2 class="navbar-brand mt-2">リスト一覧</h2>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <li>
-          <form>
-            <input type="button" value="ログアウト" onclick="location.href='../logout.php';">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <!-- Homeに戻る -->
+          <li class="nav-item active">
+            <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
+          </li>
+
+          <!-- 新規登録 -->
+          <form action="./" method="get">
+            <li class="nav-item">
+              <a class="nav-link" href="./new.php">new</a>
+            </li>
           </form>
-        </li>
-      </ul>
-    </div>
+
+          <!-- ドロップダウン -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <?=$user['name'] ?>さん
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="../logout.php">logout</a>
+            </div>
+          </li>
+        </ul>
+
+        <!-- 検索フォーム -->
+        <form action="./" method="get" class="form-inline my-2 my-lg-0">
+          <input type="search" name="search" id="search" class="form-control mr-sm-2" placeholder="Search" aria-label="Search">
+          <input type="submit" value="🔍検索" class="btn btn-outline-primary">
+        </form>
+
+      </div>
+    </nav>
   </header>
 
+  <!-- body-main -->
   <main>
-    <div class="main-header">
-      <!-- main header GET -->
-        <form action="./" method="get">
-        <!-- 新規登録 -->
-        <div class="entry">
-          <input type="button" name="new" id="new" class="new" value="作業登録" onclick="location.href='./new.php'">
-        </div>
-        <!-- 検索フォーム -->
-        <div class="search">
-          <input type="text" name="search" id="search">
-          <input type="submit" value="🔍検索">
-        </div>
-      </form>
-    </div>
-
     <!-- タイトル -->
-    <table class="list">
+    <table class="table mt-3">
       <tr>
-        <th>ポイント名</th>
-        <th>日付</th>
-        <th>登録者</th>
-        <th>状態</th>
-        <th>操作</th>
+        <th scope="col" class="">ポイント名</th>
+        <th scope="col" class="">日付</th>
+        <th scope="col" class="">登録者</th>
+        <th scope="col" class="">状態</th>
+        <th scope="col" class="">操作</th>
       </tr>
 
       <!-- 行数チェック -->
@@ -157,26 +168,26 @@
 
         <!-- 操作 -->
         <td>
-          <form action="./trip.php" method="post">
+          <form action="./trip.php" method="post" class="float-left">
             <?php if ($item['user_id'] === $user['id']): ?>
               <input type="hidden" name="item_id" value="<?=$item['id']?>">
-              <input type="submit" value="状態">
+              <input type="submit" value="状態" class="btn btn-outline-primary mr-2">
             <?php else: ?>
-              <span>操作不可</span>
+              <span >操作不可</span>
             <?php endif ?>
           </form>
 
-          <form action="./edit.php" method="post">
+          <form action="./edit.php" method="post" class="float-left">
             <?php if ($item['user_id'] === $user['id']): ?>
               <input type="hidden" name="item_id" value="<?=$item['id']?>">
-              <input type="submit" value="更新">
+              <input type="submit" value="更新" class="btn btn-outline-primary mr-2">
             <?php endif ?>
           </form>
 
-          <form action="./delete.php" method="post">
+          <form action="./delete.php" method="post" class="float-left">
             <?php if ($item['user_id'] === $user['id']): ?>
               <input type="hidden" name="item_id" value="<?=$item['id']?>">
-              <input type="submit" value="削除">
+              <input type="submit" value="削除" class="btn btn-outline-primary">
             <?php endif ?>
           </form>
         </td>
@@ -189,26 +200,22 @@
     </table>
 
     <?php if ($isSearch): ?>
-      <div class="main-footer">
-        <form>
-          <div class="goback">
-            <input type="button" value="戻る" onclick="location.href='./back.php';">
-          </div>
-        </form>
-
-        <!-- <form action="./back.php">
-          <div class="goback">
-            <input type="submit" value="戻る" onclick="location.href='./';">
-          </div>
-        </form> -->
-      </div>
+      <form>
+        <div class="my-3">
+          <input type="button" value="戻る" onclick="location.href='./back.php';" class="btn btn-outline-primary">
+        </div>
+      </form>
     <?php endif ?>
   </main>
 
   <footer>
-
   </footer>
 
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 </body>
 </html>

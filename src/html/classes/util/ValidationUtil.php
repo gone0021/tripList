@@ -187,21 +187,19 @@ class ValidationUtil {
    */
   public static function isValidMap($map, &$msg): bool {
     $msg = '';
-    preg_match("/<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $map);
 
     if (empty($map)) {
-      $msg = "URLを入力してください";
+      $msg = "リンクを入力してください";
       return false;
     }
-
-    // ※厳密なサニタイズが成功したら実装する（おそらくHTML特殊文字へ変換する必要あり）
-    // if (empty($map)) {
-    //   $msg = "地図の埋め込みコードが不適切です。";
-    //   return false;
-    // }
-
+    if (!empty($map) && !preg_match("/<iframe src=\"https:\/\/www\.google\.com\/map(.*?)<\/iframe>/s", $map)) {
+      $msg = "正しいリンクを入力してください";
+      return false;
+    }
     return true;
   }
+  // googleMapのiframe文字列の参考+
+  // https://ja.stackoverflow.com/questions/28159/iframe%E3%82%92%E6%AD%A3%E8%A6%8F%E8%A1%A8%E7%8F%BE%E3%81%A7%E5%88%A4%E5%88%A5%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95
 
   /**
    * 備考の妥当性をチェックします。

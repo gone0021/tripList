@@ -32,11 +32,11 @@
     header('Location: ../error.php');
   }
 
-  $is_went = '';
+  $str_went = '';
   if ($items['is_went'] == 0 ) {
-    $is_went = '気になる';
+    $str_went = '気になる';
   } else {
-    $is_went = '行った';
+    $str_went = '行った';
   }
 ?>
 
@@ -44,29 +44,55 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>内容の更新</title>
+  <title>詳細ページ</title>
   <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
   <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 <div class="container">
-  <header>
-      <div class="title">
-        <h1>内容の更新</h1>
-      </div>
+  <!-- body-header -->
+  <header class="">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <h2 class="navbar-brand mt-2">詳細ページ</h2>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-      <div class="login_info">
-        <ul>
-        <li>ようこそ<?=$user['name']?>さん</li>
-        <li>
-          <form>
-            <input type="button" value="ログアウト" onclick="location.href='../logout.php';">
-          </form>
-        </li>
-      </ul>
-    </div>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <!-- Homeに戻る -->
+          <li class="nav-item active">
+            <a class="nav-link" href="./">Home</a>
+          </li>
+
+          <!-- 新規登録 -->
+          <li class="nav-item">
+            <a class="nav-link" href="./new.php">new</a>
+          </li>
+
+          <!-- ドロップダウン -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <?=$user['name'] ?>さん
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="../logout.php">logout</a>
+            </div>
+          </li>
+        </ul>
+
+        <!-- 検索フォーム -->
+        <form action="./" method="get" class="form-inline my-2 my-lg-0">
+          <input type="search" name="search" id="search" class="form-control mr-sm-2" placeholder="Search" aria-label="Search">
+          <input type="submit" value="🔍検索" class="btn btn-outline-primary">
+        </form>
+
+      </div>
+    </nav>
   </header>
 
+  <!-- body-main -->
   <main>
     <?php if (!empty($_SESSION['msg']['error'])): ?>
       <p class="error">
@@ -74,62 +100,50 @@
       </p>
     <?php endif ?>
 
-      <table class="list">
+      <table class="table mt-3">
         <tr>
-          <th>日時</th>
+          <th scope="row">日時</th>
           <td class="align-l">
             <?= $items['date'] ?>
           </td>
         </tr>
         <tr>
-          <th>ポイント</th>
+          <th scope="row">ポイント</th>
           <td class="align-l">
             <?= $items['point'] ?>
           </td>
         </tr>
         <tr>
-          <th>地域</th>
+          <th scope="row">地域</th>
           <td class="align-l">
             <?= $items['area'] ?>
           </td>
         </tr>
         <tr>
-          <th>状態</th>
+          <th scope="row">状態</th>
          <td class="align-l">
-           <?= $is_went ?>
+           <?= $str_went ?>
         </td>
           </td>
         </tr>
         <tr>
-          <th>マップ</th>
+          <th scope="row">マップ</th>
           <td class="align-l ggmap">
             <?= $items['map_item'] ?>
-
-            <!-- iframeのフォーマット -->
-            <!-- <p><iframe src="" name="map_item" ></iframe></p> -->
-
-            <!-- iframeの例 -->
-            <!-- <p><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13112.534326123272!2d135.5912386!3d34.7522277!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e1f7a3353209%3A0x3c271566781edba9!2z44K444Oj44Ks44O844Kw44Oq44O844Oz!5e0!3m2!1sja!2sjp!4v1581415320399!5m2!1sja!2sjp" name="example"> -->
-
-            <!-- googlemapの地図埋め込み -->
-            <!-- <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13112.534326123272!2d135.5912386!3d34.7522277!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e1f7a3353209%3A0x3c271566781edba9!2z44K444Oj44Ks44O844Kw44Oq44O844Oz!5e0!3m2!1sja!2sjp!4v1581416403748!5m2!1sja!2sjp" 
-            width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="">
-            </iframe> -->
-            </iframe></p>
           </td>
         </tr>
         <tr>
-          <th>備考</th>
+          <th scope="row">備考</th>
           <td class="align-l">
             <?= $items['comment'] ?>
           </td>
         </tr>
       </table>
 
-      <input type="button" value="戻る" onclick="location.href='./';">
-      <br><br>
-
+      <!-- ※ボタン -->
+      <div class="mb-5">
+        <input type="button" value="戻る" onclick="location.href='./';" class="btn btn-outline-primary">
+      </div>
     </form>
   </main>
 

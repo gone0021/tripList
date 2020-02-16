@@ -6,8 +6,8 @@
   require_once($root."/classes/util/ValidationUtil.php");
   require_once($root."/classes/model/UsersModel.php");
 
+  // セッションスタート
   SessionUtil::sessionStart();
-  $userModel = new UsersModel();
 
   // フォームで送信されてきたトークンが正しいかどうか確認（CSRF対策）
   if (!isset($_SESSION['token']) || $_SESSION['token'] !== $_POST['token']) {
@@ -19,17 +19,22 @@
   // サニタイズ
   $post = CommonUtil::sanitaize($_POST);
 
-  // POSTされてきた値をセッションに代入
+  // POSTされてきた値をSESSIONに代入（入力画面で再表示）
   $_SESSION['post'] = $post;
+
+  // ユーザークラスのインスタンス
+  $userModel = new UsersModel();
 
   // バリデーションチェック
   $validityCheck = array();
-
   // 名前のバリデーション
   $validityCheck[] = validationUtil::isValidName (
     $post['name'], $_SESSION['msg']['name']
   );
-
+  // メールアドレスのバリデーション
+  $validityCheck[] = validationUtil::isValidEmail (
+    $post['email'], $_SESSION['msg']['email']
+  );
   // ユーザーネームの重複チェック
   $checkName = $userModel->getUserForNmae($post['name']);
   if (!empty($checkName)) {
@@ -38,12 +43,6 @@
   } else {
     $validityCheck[] = true;
   }
-
-  // メールアドレスのバリデーション
-  $validityCheck[] = validationUtil::isValidEmail (
-    $post['email'], $_SESSION['msg']['email']
-  );
-
   // メールアドレスの重複チェック
   $checkEmail = $userModel->getUserForEmail($post['email']);
   if (!empty($checkEmail)) {
@@ -52,17 +51,14 @@
   } else {
     $validityCheck[] = true;
   }
-
   // 誕生日のバリデーション
   $validityCheck[] = validationUtil::isBirthday (
     $post['birthday'], $_SESSION['msg']['birthday']
   );
-
   // メールアドレスのバリデーション
   $validityCheck[] = validationUtil::isValidPass (
     $post['pass1'], $_SESSION['msg']['pass1']
   );
-
   // ダブルチェック
   $validityCheck[] = validationUtil::isDoubleCheck (
     $post['pass1'], $post['pass2'], $_SESSION['msg']['pass2']
@@ -82,13 +78,13 @@
  
   // パスワードを伏せ字に
   $hide = str_repeat('*', strlen($post["pass2"]));
-  $hide = $post["pass2"];
+  // $hide = $post["pass2"];
 
   // エラーメッセージをクリア
   unset($_SESSION['msg']);
   $_SESSION['msg'] = null;
 
-//  var_dump($post['name']);
+//  var_dump($hide);
 ?>
 
 <!DOCTYPE html>
@@ -107,15 +103,16 @@
       <h1 id="head-l">登録内容の確認</h1>
     </header>
 
+    <!-- 送信フォーム -->
     <form action="./add.php" method="post">
-      <table class="login">
+      <table class="table">
         <p>
           下記でよろしければ「送信」ボタンを押してください。
         </p>
 
         <tr>
-        <th>お名前</th>
-          <td>
+        <th class="">ユーザー名</th>
+          <td class="">
             <?= $post['name'] ?>
             <input type="hidden" name="name" value="<?=$post['name']?>">
           </td>
@@ -145,9 +142,15 @@
           </td>
         </tr>
       </table>
-      <input type="submit" value="送信" id="add">
-      <input type="button" value="戻る" onclick="location.href='./';">
+
+      <!-- ※ボタン -->
+      <div class="my-2 text-center">
+        <input type="submit" value="送信" class="btn btn-primary">
+        <input type="button" value="戻る" class="btn btn-outline-primary" onclick="location.href='./';">
+      </div>
+
     </form>
+
   </main>
 
   <footer>

@@ -17,67 +17,65 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>パスワードの再設定</title>
   <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/bootstrap.css">
   <link rel="stylesheet" href="../../css/main.css">
 </head>
 
 <body>
 <div class="container">
-  <main>
-    <header>
-      <h1 id="head-l">パスワードの再設定</h1>
-    </header>
+  <!-- body-header -->
+  <header>
+    <h1 id="head-l">パスワードの再設定</h1>
+    <br>
+    <div class="align-r-m3"><a href="../../">ログイン画面へ</a></div>
+  </header>
 
-    <!-- 完了時の処理 -->
+  <!-- body-main -->
+  <main>
+    <!-- 送信フォーム -->
     <form action="./update_action.php" method="post">
+      <!-- トークンの送信 -->
       <input type="hidden" name="token" value="<?= $token ?>">
 
-      <table class="login">
-        <tr>
-          <th class="login_field">
-            メールアドレス
-          </th>
-          <td class="login_field">
-            <?=$_SESSION["email2"]?>
-            <input type="hidden" name="email" value="<?=$_SESSION["email2"]?>">
-          </td>
-        </tr>
+      <div class="form-group col-6 mx-auto">
+        <h4 class="mt-3">
+          メールアドレス：
+          <!-- メールアドレス -->
+          <?=$_SESSION["email2"]?>
+          <input type="hidden" name="email" value="<?=$_SESSION["email2"]?>">
+        </h4>
+        <!-- 入力フォーム -->
+        <input type="hidden" name="email" value="<?=$_SESSION["email2"]?>" id="email" class="form-control">
+      </div>
 
+      <!-- ※パスワード -->
+      <div class="form-group col-6 mx-auto">
+        <!-- バリデーション -->
         <?php if (isset($_SESSION['msg']['pass1'])) : ?>
-          <tr>
-            <th></th>
-            <td>
-              <p class="error"><?= $_SESSION['msg']['pass1'] ?></p>
-            </td>
-          </tr>
+          <p class="error"><?= $_SESSION['msg']['pass1'] ?></p>
         <?php endif ?>
-        <tr>
-          <th class="login_field">
-            パスワード<br>（半角英数字で8文字以上）
-          </th>
-          <td class="login_field">
-            <input type="password" name="pass1" id="pass1" class="login_box">
-          </td>
-        </tr>
+        <label for="pass1">パスワード（半角英数字で8文字以上）</label>
+        <!-- 入力フォーム -->
+        <input type="password" name="pass1" id="pass1" class="form-control">
+      </div>
 
+      <!-- ※確認用パスワード（送信対象） -->
+      <div class="form-group col-6 mx-auto">
+        <!-- バリデーション -->
         <?php if (isset($_SESSION['msg']['pass2'])) : ?>
-          <tr>
-            <th></th>
-            <td>
-              <p class="error"><?= $_SESSION['msg']['pass2'] ?></p>
-            </td>
-          </tr>
+          <p class="error"><?= $_SESSION['msg']['pass2'] ?></p>
         <?php endif ?>
-        <tr>
-          <th class="login_field">
-            パスワード（確認用）
-          </th>
-          <td class="login_field">
-            <input type="password" name="pass2" id="pass2" class="login_box">
-          </td>
-        </tr>
-      </table>
-      <input type="submit" value="送信" id="add">
-      <input type="button" value="戻る" onclick="location.href='./';">
+        <label for="pass2">パスワード（確認用）</label>
+        <!-- 入力フォーム -->
+        <input type="password" name="pass2" id="pass2" class="form-control">
+      </div>
+
+      <!-- ※ボタン -->
+      <div class="my-2">
+        <input type="submit" value="送信" class="btn btn-primary">
+        <input type="button" value="戻る" onclick="location.href='./';" class="btn btn-outline-primary">
+      </div>
+
     </form>
   </main>
 

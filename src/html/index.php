@@ -7,24 +7,13 @@
   // セッションスタート
   SessionUtil::sessionStart();
 
-  // require_once($root."/classes/model/UsersModel.php");
-  // $db = new UsersModel();
-  // $user = $db->checkPassForEmail($_SESSION["post"]["email"], $_SESSION["post"]["password"]);
-
-  // セッション変数に保存したPOSTデータ
+  // SESSIONに保存したPOSTデータ
   $email = "";
   if (!empty($_SESSION["post"]["email"])) {
     $email = $_SESSION["post"]["email"];
   }
 
-  // var_dump($_SESSION["post"]["email"]);
-  // echo '<br>';
-  // var_dump($_SESSION["post"]["password"]);
-  // echo '<br>';
-  // var_dump($user);
-
-
-  // セッション変数に保存したPOSTデータを削除
+  // SESSIONに保存したPOSTデータを削除
   unset($_SESSION["post"]);
 
 ?>
@@ -34,59 +23,59 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>ログイン</title>
-  <link rel="stylesheet" href="./css/bootstrap.css">
   <link rel="stylesheet" href="./css/normalize.css">
+  <link rel="stylesheet" href="./css/bootstrap.css">
   <link rel="stylesheet" href="./css/main.css">
 </head>
 
 <body>
 <div class="container">
+  <!-- body-header -->
   <header>
-    <h1 id="head-l">ログイン</h1>
+    <h1 id="head-l" class="md-3">ログイン</h1>
     <br>
     <div class="align-r-m3"><a href="./account/new/">新規登録</a></div>
   </header>
 
+  <!-- body-main -->
   <main>
-    <!-- エラー時の処理 -->
+    <!-- エラーメッセージ -->
     <?php if (!empty($_SESSION["msg"]["error"])) : ?>
       <p class="error">
         <?= $_SESSION["msg"]["error"] ?>
       </p>
     <?php endif ?>
 
-    <!-- ログイン処理 -->
-    <form action="./login.php" method="post">
-      <table class="login">
-        <tr>
-          <th class="login_field">
-          <label for="email">メールアドレス</label>            
-          </th>
-          <td class="login_field">
-            <input type="email" name="email" id="email" class="login_email" value="<?=$email?>">
-          </td>
-        </tr>
+    <!-- 送信フォーム -->
+    <form action="./login.php" method="post"> 
+      <!-- ※メールアドレス -->
+      <div class="form-group col-6 mx-auto">
+        <label for="email" class="mt-3">メールアドレス</label>
+        <input type="email" name="email" id="email" class="form-control" value="<?=$email?>">
+      </div>
 
-        <tr>
-          <th class="login_field">
-            <label for="password">パスワード</label>
-          </th>
-          <td class="login_field">
-            <input type="password" name="password" id="password" class="login_box">
-          </td>
-        </tr>
+      <!-- ※パスワード -->
+      <div class="form-group col-6  mx-auto">
+        <label for="password" class="mt-3">パスワード</label>
+        <input type="password" name="password" id="password" class="form-control">
+      </div>
 
-      </table>
-      <input type="submit" value="ログイン" id="login">
+      <!-- ※ボタン -->
+      <div class="my-2 my-3">
+        <input type="submit" value="ログイン" id="login" class="btn btn-primary">
+        <input type="reset" value="リセット" class="btn btn-outline-primary">
+      </div>
     </form>
 
-    <br><br><br>
-    <a href="./account/pass/">パスワードを忘れた</a>
+    <div>
+      <a href="./account/pass/">パスワードを忘れた</a>
+    </div>
+
   </main>
 
   <footer>
   </footer>
-  <?php unset($_SESSION["msg"]); ?>
+  <?php unset($_SESSION['msg']) ?>
 </div>
 </body>
 </html>

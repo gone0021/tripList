@@ -21,12 +21,10 @@
 
   // バリデーションチェック
   $validityCheck = array();
-
   // パスワードのバリデーション
   $validityCheck[] = validationUtil::isValidPass (
     $post['pass1'], $_SESSION['msg']['pass1']
   );
-
   // ダブルチェック
   $validityCheck[] = validationUtil::isDoubleCheck (
     $post['pass1'], $post['pass2'], $_SESSION['msg']['pass2'] 
@@ -44,13 +42,12 @@
     }
   }
 
-  // バリデーションを通過
   // パスワードの暗号化
   $hash = password_hash($post['pass2'], PASSWORD_DEFAULT);
 
-  // セッション変数に保存したエラーメッセージをクリアする
+  // セSESSIONに保存したエラーメッセージをクリアする
   $_SESSION['msg']['error'] = '';
-  // データベースに登録する内容を連想配列にする。
+  // データベースに登録する内容を連想配列にする
   $data = array (
     'email' => $post['email'],
     'password' => $hash,
@@ -60,7 +57,7 @@
     $db = new UsersModel();
     $db->updatetUserPassword($data);
 
-    // セッションに保存したPOSTデータを削除
+    // SESSIONしたPOSTデータを削除
     unset($_SESSION['post']);
     unset($_SESSION['email']);
 

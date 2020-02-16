@@ -14,17 +14,14 @@
 
   // バリデーションチェック
   $validityCheck = array();
-
   // メールアドレスのバリデーション
   $validityCheck[] = validationUtil::isValidEmail (
     $post['email1'], $_SESSION['msg']['email1']
   );
-
   // ダブルチェック
   $validityCheck[] = validationUtil::isDoubleCheck (
     $post['email1'], $post['email2'], $_SESSION['msg']['email2'] 
   );
-
   // 誕生日のバリデーション
   $validityCheck[] = validationUtil::isBirthday (
     $post['birthday'], $_SESSION['msg']['birthday']
@@ -34,7 +31,7 @@
   foreach ($validityCheck as $k => $v) {
     // $vにnullが代入されている可能性があるので「===」で比較
     if ($v === false) {
-      // POSTされてきたメールアドレスをセッション変数に保存→ログインページのメールアドレスのテキストボックスに表示
+      // POSTされてきた値をSESSIONに代入（入力画面で再表示）
       $_SESSION["post"]["email1"] = $post["email1"];
       $_SESSION["post"]["email2"] = $post["email2"];
       $_SESSION["post"]["birthday"] = $post["birthday"];
@@ -50,12 +47,12 @@
     // 入力フォームで入力されたemailとpasswordをgetUserの引数にpost
     $user = $db->checkBirthdayForEmail($post["email2"], $post["birthday"]);
 
+    // ユーザーの情報が取得できなかったとき
     if (empty($user)) {
-      // ユーザーの情報が取得できなかったとき
       // エラーメッセージをセッション変数に保存 → ログインページに表示
       $_SESSION["msg"]["error"] = "情報が一致しません";
 
-      // POSTされてきたデータをセッションに保存→ログインページのメールアドレスのテキストボックスに表示
+      // POSTされてきた値をSESSIONに代入（入力画面で再表示）
       $_SESSION["post"]["email1"] = $post["email1"];
       $_SESSION["post"]["email2"] = $post["email2"];
       $_SESSION["post"]["birthday"] = $post["birthday"];
@@ -63,8 +60,8 @@
       // ログインページへリダイレクト
       header("Location: ./");
 
+    // メールアドレスの情報が取得できたとき
     } else {
-      // メールアドレスの情報が取得できたとき
       // セッション変数に保存されているエラーメッセージをクリア
       $_SESSION["msg"]["error"] = "";
       unset($_SESSION["msg"]["error"]);
