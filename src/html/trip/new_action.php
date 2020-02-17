@@ -48,23 +48,27 @@
   }
 
   // var_dump($post);
-  ?>
+
+  // ページタイトル
+  $title = '登録完了';
+?>
 
 <!DOCTYPE html>
-<html>
+<html lang="jp">
 <head>
+  <meta charset="UTF-8">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>登録完了</title>
+  <title> <?= $title ?> </title>
   <link rel="stylesheet" href="../css/normalize.css">
   <link rel="stylesheet" href="../css/bootstrap.css">
   <link rel="stylesheet" href="../css/main.css">
 </head>
 
 <body>
-  <div class="container">
-  <header class="my-3">
-    <h1 id="head-l">登録完了</h1>
-  </header>
+<div class="container">
+  <!-- body-header -->
+  <?php require_once ($root."/trip/header.php"); ?>
+
 
   <main>
     <table class="table">

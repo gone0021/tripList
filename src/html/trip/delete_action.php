@@ -26,13 +26,17 @@
 		// var_dump($e);
 		header('Location: ../error.php');
   }
+
+  // ページタイトル
+  $title = '削除完了';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="jp">
 <head>
+  <meta charset="UTF-8">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>削除完了</title>
+  <title> <?= $title ?> </title>
   <link rel="stylesheet" href="../css/normalize.css">
   <link rel="stylesheet" href="../css/bootstrap.css">
   <link rel="stylesheet" href="../css/main.css">
@@ -40,9 +44,9 @@
 
 <body>
 <div class="container">
-  <header class="my-3">
-    <h1 id="head-l">削除完了</h1>
-  </header>
+  <!-- body-header -->
+  <?php require_once ($root."/trip/header.php"); ?>
+
 
   <main>
     <table class="table">

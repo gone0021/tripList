@@ -40,59 +40,27 @@
 
   // POSTされてきたitem_idをセッションに保存
   $_SESSION['post']['item_id'] = $post['item_id'];
+
+  // ページタイトル
+  $title = '削除確認';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="jp">
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<title>削除確認</title>
-<link rel="stylesheet" href="../css/normalize.css">
-<link rel="stylesheet" href="../css/bootstrap.css">
-<link rel="stylesheet" href="../css/main.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title> <?= $title ?> </title>
+  <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="../css/main.css">
 </head>
+
 <body>
 <div class="container">
   <!-- body-header -->
-  <header class="">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <h2 class="navbar-brand mt-2">削除確認</h2>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+  <?php require_once ($root."/trip/header.php"); ?>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <!-- Homeに戻る -->
-          <li class="nav-item active">
-            <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
-          </li>
-
-          <!-- 新規登録 -->
-          <li class="nav-item">
-            <a class="nav-link" href="./new.php">new</a>
-          </li>
-
-          <!-- ドロップダウン -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <?=$user['name'] ?>さん
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="../logout.php">logout</a>
-            </div>
-          </li>
-        </ul>
-
-        <!-- 検索フォーム -->
-        <form action="./" method="get" class="form-inline my-2 my-lg-0">
-          <input type="search" name="search" id="search" class="form-control mr-sm-2" placeholder="Search" aria-label="Search">
-          <input type="submit" value="🔍検索" class="btn btn-outline-primary">
-        </form>
-
-      </div>
-    </nav>
-  </header>
 
   <!-- body-main -->
   <main>
