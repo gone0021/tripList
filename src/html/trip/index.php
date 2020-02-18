@@ -68,7 +68,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>リスト一覧</title>
+  <title> <?= $title ?> </title>
   <link rel="stylesheet" href="../css/normalize.css">
   <link rel="stylesheet" href="../css/bootstrap.css">
   <link rel="stylesheet" href="../css/main.css">
@@ -77,12 +77,12 @@
 <body>
 <div class="container">
   <!-- body-header -->
-  <?php require_once ($root."/trip/header.php"); ?>
+  <?php require_once ($root."./trip/header.php"); ?>
 
   <!-- body-main -->
   <main>
     <!-- タイトル -->
-    <table class="table mt-3">
+    <table class="table">
       <tr>
         <th scope="col" class="">ポイント名</th>
         <th scope="col" class="">日付</th>

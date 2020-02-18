@@ -30,22 +30,25 @@
     // var_dump($e);exit;
     header('Location: ../../error.php');
   }
+  // ページタイトル
+  $title = '登録完了';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="jp">
 <head>
+  <meta charset="UTF-8">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>登録完了</title>
+  <title> <?= $title ?> </title>
   <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/bootstrap.css">
   <link rel="stylesheet" href="../../css/main.css">
 </head>
 
 <body>
-  <div class="container">
-  <header>
-      <h1 id="head-l">登録完了</h1>
-  </header>
+<div class="container">
+  <!-- body-header -->
+  <?php require_once ($root."./account/header.php"); ?>
 
   <main>
     <table>
@@ -64,5 +67,12 @@
   <footer>
   </footer>
 </div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<a class="navbar-brand" href="#">Navbar</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+
 </body>
 </html>

@@ -59,7 +59,7 @@
 <body>
 <div class="container">
   <!-- body-header -->
-  <?php require_once ($root."/trip/header.php"); ?>
+  <?php require_once ($root."./trip/header.php"); ?>
 
 
   <!-- body-main -->
@@ -69,7 +69,7 @@
     </p>
     <!-- 送信フォーム -->
     <form action="./delete_action.php" method="post">
-      <table class="table mt-3">
+      <table class="table">
         <!-- ※日時：date -->
         <tr>
           <th scope="row">日時</th>

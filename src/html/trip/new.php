@@ -75,7 +75,7 @@
 <body>
 <div class="container">
   <!-- body-header -->
-  <?php require_once ($root."/trip/header.php"); ?>
+  <?php require_once ($root."./trip/header.php"); ?>
 
   <!-- body-main -->
   <main>
@@ -91,7 +91,7 @@
       <!-- トークンの送信 -->
       <input type="hidden" name="token" value="<?= $token ?>">
 
-      <table class="table mt-3">
+      <table class="table">
         <!-- ※日時：date -->
         <tr>
           <th scope="row" class="pt-4">日時</th>

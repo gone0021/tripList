@@ -30,14 +30,16 @@
 
   // var_dump($root);
   
+  // ページタイトル
+  $title = '新規ユーザー登録';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="jp">
 <head>
+  <meta charset="UTF-8">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>新規登録</title>
-  <!-- <link rel="stylesheet" href="../../css/bootstrap.css"> -->
+  <title> <?= $title ?> </title>
   <link rel="stylesheet" href="../../css/normalize.css">
   <link rel="stylesheet" href="../../css/bootstrap.css">
   <link rel="stylesheet" href="../../css/main.css">
@@ -46,11 +48,8 @@
 <body>
 <div class="container">
   <!-- body-header -->
-  <header>
-    <h1 id="head-l">新規登録</h1>
-    <br>
-    <div class="align-r-m3"><a href="../../">ログイン画面へ</a></div>
-  </header>
+  <?php require_once ($root."./account/header.php"); ?>
+
 
   <!-- body-main -->
   <main>
@@ -122,15 +121,14 @@
       </div>
 
       <!-- ※ボタン -->
-      <div class="my-2">
-        <input type="submit" value="確認" class="btn btn-primary">
+      <div class="my-2 my-3">
+        <input type="submit" value="確認" class="btn btn-outline-primary">
         <input type="reset" value="リセット" class="btn btn-outline-primary">
       </div>
 
     </form>
 
-    <br>
-    <div>
+    <div class="mb-3">
       <a href="../pass/">パスワードを忘れた</a>
     </div>
     
@@ -139,6 +137,12 @@
   <footer>
   </footer>
   <?php unset($_SESSION["smg"]); ?> 
+
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 </body>
 </html>

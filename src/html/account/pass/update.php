@@ -1,7 +1,7 @@
 <?php
   // クラスの読み込み
   $root = $_SERVER['DOCUMENT_ROOT'];
-  $root .= "/data/OurCalendar/html";
+  $root .= "/data/tripList/html";
   require_once($root."/classes/util/SessionUtil.php");
   
   SessionUtil::sessionStart();
@@ -9,13 +9,16 @@
   $token = bin2hex(openssl_random_pseudo_bytes(108));
   $_SESSION['token'] = $token;
 
+  // ページタイトル
+  $title = 'パスワードの再設定';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="jp">
 <head>
+  <meta charset="UTF-8">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>パスワードの再設定</title>
+  <title> <?= $title ?> </title>
   <link rel="stylesheet" href="../../css/normalize.css">
   <link rel="stylesheet" href="../../css/bootstrap.css">
   <link rel="stylesheet" href="../../css/main.css">
@@ -24,11 +27,7 @@
 <body>
 <div class="container">
   <!-- body-header -->
-  <header>
-    <h1 id="head-l">パスワードの再設定</h1>
-    <br>
-    <div class="align-r-m3"><a href="../../">ログイン画面へ</a></div>
-  </header>
+  <?php require_once ($root."./account/header.php"); ?>
 
   <!-- body-main -->
   <main>
@@ -72,7 +71,7 @@
 
       <!-- ※ボタン -->
       <div class="my-2">
-        <input type="submit" value="送信" class="btn btn-primary">
+        <input type="submit" value="送信" class="btn btn-outline-primary">
         <input type="button" value="戻る" onclick="location.href='./';" class="btn btn-outline-primary">
       </div>
 
@@ -83,5 +82,10 @@
   </footer>
   <?php unset($_SESSION["smg"]); ?> 
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 </body>
 </html>

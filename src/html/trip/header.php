@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="jp">
 <!-- body-header -->
-  <header class="">
+  <header class="mb-3">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <!-- タイトル -->
       <h2 class="navbar-brand mt-2"><?= $title ?></h2>
+
+      <!-- ハンバーガーメニュー -->
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
+      <!-- ナビバー -->
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <!-- Homeに戻る -->
-          <li class="nav-item active">
+          <li class="nav-item">
             <a class="nav-link" href="./back.php">Home <span class="sr-only">(current)</span></a>
           </li>
 

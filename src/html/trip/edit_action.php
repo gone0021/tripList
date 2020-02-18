@@ -65,7 +65,7 @@
 <body>
 <div class="container">
   <!-- body-header -->
-  <?php require_once ($root."/trip/header.php"); ?>
+  <?php require_once ($root."./trip/header.php"); ?>
 
 
   <main>
