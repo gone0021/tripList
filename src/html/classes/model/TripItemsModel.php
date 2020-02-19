@@ -163,7 +163,7 @@ class TripItemsModel extends BaseModel {
    * @param array $data 作業項目の連想配列
    * @return bool 成功した場合:TRUE、失敗した場合:FALSE
    */
-  public function registerTripItem($data) {
+  public function insertTripItem($data) {
     // テーブルの構造でデフォルト値が設定されているカラムをinsert文で指定する必要はありません（特に理由がない限り）。
     $sql = '';
     $sql .= 'INSERT into trip_items (';
@@ -278,7 +278,7 @@ class TripItemsModel extends BaseModel {
   }
 
   /**
-   * 指定IDの項目を論理削除します。
+   * 指定IDの項目を論理削除
    *
    * @param int $id 作業項目ID
    * @return bool 成功した場合:TRUE、失敗した場合:FALSE

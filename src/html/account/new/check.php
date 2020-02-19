@@ -36,7 +36,7 @@
     $post['email'], $_SESSION['msg']['email']
   );
   // ユーザーネームの重複チェック
-  $checkName = $userModel->getUserForNmae($post['name']);
+  $checkName = $userModel->getUserForName($post['name']);
   if (!empty($checkName)) {
     $validityCheck[] = false;
     $_SESSION["msg"]["name"] = "既に使われています";

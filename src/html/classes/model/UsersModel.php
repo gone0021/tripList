@@ -87,7 +87,7 @@ class UsersModel extends BaseModel {
    * @param string $name ユーザー名
    * @return array ユーザー情報の配列
    */
-  public function getUserForNmae($name) {
+  public function getUserForName($name) {
     // $emailが空だったら、空の配列を返却
     if (empty($name)) {
       return array();
@@ -116,38 +116,6 @@ class UsersModel extends BaseModel {
     }
 
     return $rec;
-  }
-
-  /**
-   * 指定IDのユーザーが存在するかどうか調べる
-   * @param int $id ユーザーID
-   * @return boolean ユーザーが存在するとき：true、ユーザーが存在しないとき：false
-   */
-  public function isExistsUser($id): bool {
-    // ＄idが数字でなかったら、falseを返却
-    if (!is_numeric($id)) {
-      return false;
-    }
-
-    // $idが0以下はありえないので、falseを返却
-    if ($id <= 0) {
-      return false;
-    }
-
-    $sql = '';
-    $sql .= 'SELECT count(id) as num,';
-    $sql .= 'from users,';
-    $sql .= 'where is_deleted = 0';
-    $stmt = $this->dbh->prepare($sql);
-    $stmt->execute();
-    $ret = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    // レコードの数が0だったらfalseを返却
-    if ($ret['num'] == 0) {
-      return false;
-    }
-
-    return true;
   }
 
   //+------------------------------------------------------------------+

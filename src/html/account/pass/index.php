@@ -3,7 +3,6 @@
   $root = $_SERVER['DOCUMENT_ROOT'];
   $root .= "/data/tripList/html";
   require_once($root."/classes/util/SessionUtil.php");
-  require_once($root."/classes/model/UsersModel.php");
   
   SessionUtil::sessionStart();
 

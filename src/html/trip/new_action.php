@@ -40,7 +40,7 @@
   // アイテムの追加とエラー処理
   try {
     $db = new TripItemsModel();
-    $db->registerTripItem($data);
+    $db->insertTripItem($data);
 
   } catch (Exception $e) {
     // var_dump($e);exit;
