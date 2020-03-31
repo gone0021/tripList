@@ -128,7 +128,7 @@
           <th scope="row">日時</th>
           <td class="align-l">
             <?= $post['date'] ?>
-            <input type="hidden" name="date" id="date" class="date" value="<?= $post['date'] ?>">
+            <input type="hidden" name="date" id="date" class="" value="<?= $post['date'] ?>">
           </td>
         </tr>
 

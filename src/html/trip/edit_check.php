@@ -151,7 +151,7 @@
           <th scope="row">マップ</th>
           <td class="align-l ggmap">
             <?= $post['map_item'] ?>
-            <input type="hidden"  name="map_item" class="item_name" value="<?= $enc_map_item ?>" id="map_item">
+            <input type="hidden"  value="<?= $enc_map_item ?>" id="map_item" class="item_name">
           </td>
         </tr>
 
