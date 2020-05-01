@@ -76,7 +76,7 @@
   // map_itemのエンコード（iframeを直接入れるとダブルクオーテーションで途切れるため）
   $encode = '';
   $enc_map_item = base64_encode($post['map_item']);
-  // $_SESSION['enc_map_item'] = $enc_map_item;
+  // var_dump($enc_map_item);
 
   // ページタイトル
   $title = '内容の更新';
@@ -151,7 +151,7 @@
           <th scope="row">マップ</th>
           <td class="align-l ggmap">
             <?= $post['map_item'] ?>
-            <input type="hidden"  value="<?= $enc_map_item ?>" id="map_item" class="item_name">
+            <input type="hidden"  name="map_item" value="<?= $enc_map_item ?>" id="map_item" class="item_name">
           </td>
         </tr>
 

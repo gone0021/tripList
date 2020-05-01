@@ -18,12 +18,15 @@
     $user = $_SESSION['user'];
   }
 
+  // var_dump($_POST['map_item']);
+
   // サニタイズ
   $post = CommonUtil::sanitaize($_POST);
 
   // map_itemはbase4で6エンコードされているためデコードしてdbに入れる
   $dec_map_item = '';
   $dec_map_item = base64_decode($post['map_item']);
+  // var_dump($dec_map_item);
 
   // データベースに登録する内容を連想配列にする。
   $data = array (

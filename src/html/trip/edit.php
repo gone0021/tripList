@@ -182,10 +182,10 @@
               echo $items['map_item']; 
               }
             ?>
-            <!-- 入力フォーム -->
-            <!-- googlemapから位置情報を取得するためsessionを取らずvalueを入れない（URLを埋め込む意味がない） -->
             <p class="mt-3"><label for="map_item">※ 以下に新しい位置情報を入力してください</label></p>
-            <input type="text"  name="map_item" id="map_item" class="form-control">
+            <!-- 入力フォーム -->
+            <!-- googlemapから位置情報を取得するためsessionを取らずvalueを入れない（""で囲まれている範囲がるためうまく表示できない） -->
+            <input type="text"  name="map_item" id="map_item" value="" class="form-control">
             <p><a href="https://www.google.co.jp/maps/" target="blank">GoogleMap</a>から「共有→地図を埋め込む」のURLを貼り付けてください</p>
           </td>
         </tr>
